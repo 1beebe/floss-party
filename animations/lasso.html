@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Floss Lasso</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rye&family=Figtree:wght@500;700&display=swap">
+<style>
+  :root {
+    --coral: #F26B50;
+    --coral-deep: #D9563D;
+    --enamel: #FBF6EC;
+    --ink: #262A27;
+    --floss: #BFF2DC;
+  }
+  html, body { height: 100%; }
+  body {
+    background: var(--coral);
+    color: var(--ink);
+    font-family: "Figtree", system-ui, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-inline: 16px;
+    padding-block: 24px;
+    box-sizing: border-box;
+  }
+  .wrap {
+    width: 100%;
+    max-width: 560px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  svg.stage {
+    width: 100%;
+    max-width: 100%;
+    aspect-ratio: 1 / 1;
+    height: auto;
+    display: block;
+    overflow: visible;
+  }
+  .bar {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  h1 {
+    font-family: "Rye", Georgia, serif;
+    font-weight: 400;
+    font-size: clamp(22px, 5vw, 30px);
+    margin: 0;
+    color: var(--enamel);
+    text-shadow: 2px 2px 0 var(--ink);
+    letter-spacing: .02em;
+  }
+  .meta {
+    font-size: 13px;
+    color: var(--ink);
+    opacity: .75;
+    margin: 4px 0 0;
+    font-variant-numeric: tabular-nums;
+  }
+  .controls { display: flex; gap: 8px; }
+  button {
+    font: 700 13px/1 "Figtree", system-ui, sans-serif;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--ink);
+    background: var(--enamel);
+    border: 3px solid var(--ink);
+    border-radius: 999px;
+    padding: 9px 14px;
+    cursor: pointer;
+    box-shadow: 2px 2px 0 var(--ink);
+  }
+  button:active { transform: translate(2px, 2px); box-shadow: none; }
+  button:focus-visible { outline: 3px solid var(--floss); outline-offset: 2px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <svg class="stage" viewBox="-40 -30 520 520" role="img" aria-label="A cartoon tooth catches a falling cowboy hat, pulls out a strand of mint floss, spins it overhead like a lasso, ropes a piece of candy, yanks it away, tips its hat, then tosses the hat into the air.">
+    <defs>
+      <path id="sparkle" d="M0 -12 C1.5 -3 3 -1.5 12 0 C3 1.5 1.5 3 0 12 C-1.5 3 -3 1.5 -12 0 C-3 -1.5 -1.5 -3 0 -12Z"/>
+    </defs>
+
+    <!-- ground shadow -->
+    <ellipse id="shadow" cx="202" cy="330" rx="86" ry="10" fill="#D9563D"/>
+
+    <!-- back half of the lasso loop -->
+    <g id="loopBack" fill="none" stroke-linecap="round">
+      <path class="o" stroke="#262A27" stroke-width="8"/>
+      <path class="i" stroke="#BFF2DC" stroke-width="3.5"/>
+    </g>
+
+    <!-- candy -->
+    <g id="candy">
+      <g stroke="#262A27" stroke-width="4" stroke-linejoin="round" fill="#FFD23F">
+        <path d="M-15 0 L-31 -12 L-29 12 Z"/>
+        <path d="M15 0 L31 -12 L29 12 Z"/>
+        <circle r="17" stroke-width="5"/>
+      </g>
+      <path d="M-9 -9 Q4 -6 0 1 Q-5 8 9 9" fill="none" stroke="#F26B50" stroke-width="3.5" stroke-linecap="round"/>
+      <g id="candyFace">
+        <circle cx="-6" cy="0" r="2.4" fill="#262A27"/>
+        <circle cx="6" cy="0" r="2.4" fill="#262A27"/>
+        <path d="M-10 -7 L-3 -4 M10 -7 L3 -4" stroke="#262A27" stroke-width="2.5" stroke-linecap="round"/>
+      </g>
+    </g>
+
+    <!-- the tooth -->
+    <g id="char">
+      <g stroke="#262A27" stroke-width="7" fill="#FBF6EC">
+        <g id="armLs"><rect x="-16" y="-12" width="52" height="24" rx="12"/></g>
+        <g id="armRs"><rect x="-16" y="-12" width="52" height="24" rx="12"/></g>
+        <path stroke-linejoin="round" d="M112 222 C122 260 125 305 145 314 C165 323 180 312 182 290 C184 265 186 250 202 250 C218 250 220 265 222 290 C224 312 239 323 259 314 C279 305 282 260 292 222 L298 192 C304 170 306 150 306 135 C306 100 290 80 262 80 C236 80 222 94 202 96 C182 94 168 80 142 80 C114 80 98 100 98 135 C98 150 100 170 106 192 Z"/>
+      </g>
+      <g fill="#FBF6EC">
+        <g id="armLf"><rect x="-12.5" y="-8.5" width="45" height="17" rx="8.5"/></g>
+        <g id="armRf"><rect x="-12.5" y="-8.5" width="45" height="17" rx="8.5"/></g>
+      </g>
+      <ellipse id="eyeL" cx="164" cy="170" rx="9" ry="12" fill="#262A27"/>
+      <ellipse id="eyeR" cx="240" cy="170" rx="9" ry="12" fill="#262A27"/>
+      <ellipse id="mouthO" cx="202" cy="204" rx="5" ry="6" fill="#262A27"/>
+      <path id="smile" d="M188 198 Q202 212 216 198" fill="none" stroke="#262A27" stroke-width="5" stroke-linecap="round"/>
+      <g id="shine" fill="#FBF6EC" stroke="#262A27" stroke-width="2.2">
+        <use href="#sparkle" id="sh1"/>
+        <use href="#sparkle" id="sh2"/>
+      </g>
+
+      <!-- cowboy hat -->
+      <g id="hat" stroke="#262A27" stroke-width="6" stroke-linejoin="round">
+        <path fill="#C9874D" d="M-48 2 C-54 -30 -44 -62 -28 -66 C-14 -68 -8 -56 0 -56 C8 -56 14 -68 28 -66 C44 -62 54 -30 48 2 Z"/>
+        <path fill="#A86A38" stroke="none" d="M8 -52 C20 -60 30 -60 36 -54 C44 -40 46 -20 44 -4 L30 -4 C32 -22 26 -40 8 -52 Z" opacity=".55"/>
+        <path fill="#262A27" stroke-width="3" d="M-47 -5 L47 -5 L46 -17 C20 -14 -20 -14 -46 -17 Z"/>
+        <path fill="#C9874D" d="M-106 -26 C-96 0 -56 8 0 8 C56 8 96 0 106 -26 C110 -6 70 21 0 21 C-70 21 -110 -6 -106 -26 Z"/>
+      </g>
+    </g>
+
+    <!-- front half of the loop, and the rope to the hand -->
+    <g id="loopFront" fill="none" stroke-linecap="round">
+      <path class="o" stroke="#262A27" stroke-width="8"/>
+      <path class="i" stroke="#BFF2DC" stroke-width="3.5"/>
+    </g>
+    <g id="rope" fill="none" stroke-linecap="round">
+      <path class="o" stroke="#262A27" stroke-width="8"/>
+      <path class="i" stroke="#BFF2DC" stroke-width="3.5"/>
+    </g>
+    <circle id="knot" r="5" fill="#BFF2DC" stroke="#262A27" stroke-width="3"/>
+    <g fill="#FBF6EC" stroke="#262A27" stroke-width="2.2">
+      <use href="#sparkle" id="fx1"/>
+      <use href="#sparkle" id="fx2"/>
+    </g>
+  </svg>
+
+  <div class="bar">
+    <div>
+      <h1>Floss Lasso</h1>
+      <p class="meta">Hat on, 18 inches of mint floss, one sugar bug roped. 9-second loop.</p>
+    </div>
+    <div class="controls">
+      <button id="toggle" type="button">Pause</button>
+      <button id="restart" type="button">Replay</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const T = 9;
+  const TAU = Math.PI * 2;
+  const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+  const seg = (t, a, b) => clamp((t - a) / (b - a));
+  const lerp = (a, b, p) => a + (b - a) * p;
+  const eIO = p => p < .5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2;
+  const eOut = p => 1 - (1 - p) * (1 - p);
+  const eIn = p => p * p;
+  const rad = d => d * Math.PI / 180;
+
+  // Keyframe interpolation with ease-in-out between keys
+  function kf(t, keys) {
+    if (t <= keys[0][0]) return keys[0][1];
+    for (let i = 1; i < keys.length; i++) {
+      if (t <= keys[i][0]) {
+        const [t0, v0] = keys[i - 1], [t1, v1] = keys[i];
+        return lerp(v0, v1, eIO((t - t0) / (t1 - t0)));
+      }
+    }
+    return keys[keys.length - 1][1];
+  }
+
+  const $ = id => document.getElementById(id);
+  const el = {
+    char: $('char'), shadow: $('shadow'),
+    armLs: $('armLs'), armRs: $('armRs'), armLf: $('armLf'), armRf: $('armRf'),
+    eyeL: $('eyeL'), eyeR: $('eyeR'), mouthO: $('mouthO'), smile: $('smile'),
+    hat: $('hat'), candy: $('candy'), candyFace: $('candyFace'),
+    loopBack: $('loopBack'), loopFront: $('loopFront'), rope: $('rope'), knot: $('knot'),
+    sh1: $('sh1'), sh2: $('sh2'), fx1: $('fx1'), fx2: $('fx2')
+  };
+  const setD = (g, d) => g.querySelectorAll('path').forEach(p => p.setAttribute('d', d));
+  const show = (node, on) => node.setAttribute('visibility', on ? 'visible' : 'hidden');
+
+  const SHOULDER_L = [110, 205], SHOULDER_R = [294, 205], ARM = 32;
+  const SPIN_START = 2.4, OMEGA = TAU * 2;       // two revolutions a second
+  const SPIN_C = [215, 20], SPIN_R = [92, 16];
+  const CANDY = [430, 350];
+
+  function sparkle(node, x, y, p, rot = 0) {
+    const s = Math.sin(Math.PI * clamp(p));
+    show(node, s > 0.01);
+    node.setAttribute('transform', `translate(${x} ${y}) rotate(${rot + p * 90}) scale(${s * 1.9})`);
+  }
+
+  function render(t) {
+    t = ((t % T) + T) % T;
+
+    // ---- body: bob, hop and squash ----
+    let bob = 0, sq = 0;
+    if (t > 2.9 && t < 6.0) bob = -Math.abs(Math.sin((t - 2.9) * Math.PI * 2)) * 5 * seg(t, 2.9, 3.1);
+    if (t > 8.4 && t < 8.9) bob = -34 * Math.sin(Math.PI * seg(t, 8.4, 8.9));
+    const landing = (t0) => { const d = t - t0; return d > 0 && d < 0.9 ? 0.09 * Math.exp(-d * 6) * Math.cos(d * 22) : 0; };
+    sq += landing(1.0) + landing(8.9) * 0.8 + landing(7.0) * 0.5;
+    const sy = 1 - sq, sx = 1 + sq * 0.7;
+    el.char.setAttribute('transform', `translate(0 ${bob}) translate(202 318) scale(${sx} ${sy}) translate(-202 -318)`);
+    const sh = 1 + bob / 120;
+    el.shadow.setAttribute('rx', 86 * sh * sx);
+    el.shadow.setAttribute('opacity', 0.6 + 0.4 * sh);
+    const toWorld = ([x, y]) => [202 + (x - 202) * sx, 318 + (y - 318) * sy + bob];
+
+    // ---- arms (angles in degrees; positive points down and out) ----
+    let aR = kf(t, [[0, -10], [0.2, -60], [1.0, -60], [1.3, 25], [1.8, 25], [2.05, 75], [2.4, -55],
+      [5.85, -55], [6.05, -88], [6.35, 20], [6.9, 20], [7.02, -80], [7.4, -35], [7.8, 25], [8.4, 25], [8.6, -65], [9, -10]]);
+    let aL = kf(t, [[0, -10], [0.2, -60], [1.0, -60], [1.3, 25], [7.7, 25], [7.9, -80], [8.2, -80], [8.4, 10], [8.6, -65], [9, -10]]);
+    const wave = 12 * Math.sin(t * 16) * seg(t, 0.2, 0.35) * (1 - seg(t, 0.9, 1.0));
+    aR += wave; aL -= wave;
+    const spinAmt = seg(t, 2.4, 2.7) * (1 - seg(t, 5.6, 5.85));
+    const theta = (t - SPIN_START) * OMEGA;
+    aR += 12 * Math.sin(theta) * spinAmt;
+    aL += 8 * Math.sin(t * 9) * spinAmt;
+    el.armRs.setAttribute('transform', `translate(${SHOULDER_R}) rotate(${aR})`);
+    el.armRf.setAttribute('transform', `translate(${SHOULDER_R}) rotate(${aR})`);
+    el.armLs.setAttribute('transform', `translate(${SHOULDER_L}) scale(-1 1) rotate(${aL})`);
+    el.armLf.setAttribute('transform', `translate(${SHOULDER_L}) scale(-1 1) rotate(${aL})`);
+    const hand = toWorld([SHOULDER_R[0] + ARM * Math.cos(rad(aR)), SHOULDER_R[1] + ARM * Math.sin(rad(aR))]);
+
+    // ---- hat ----
+    let hx = 202, hy = 90, hr = -6;
+    if (t < 1.0) {
+      const p = seg(t, 0.3, 1.0);
+      hy = lerp(-170, 90, eIn(p));
+      hx = 202 + 18 * Math.sin(t * 7) * (1 - p);
+      hr = -6 + 22 * Math.sin(t * 9) * (1 - p);
+    } else if (t < 1.5) {
+      hr = -6 + 10 * Math.exp(-(t - 1) * 8) * Math.sin((t - 1) * 30);
+    } else if (t > 7.8 && t < 8.4) {
+      const p = Math.sin(Math.PI * seg(t, 7.85, 8.35));
+      hy = 90 - 14 * p; hr = -6 - 16 * p; hx = 202 - 6 * p;
+    } else if (t >= 8.45) {
+      const p = seg(t, 8.45, 9);
+      hy = lerp(90, -170, eOut(p)); hx = 202 + 40 * p; hr = -6 + 300 * p;
+    }
+    el.hat.setAttribute('transform', `translate(${hx} ${hy}) rotate(${hr})`);
+
+    // ---- face ----
+    let ex = 0, ey = 0;
+    if (t < 1.0) ey = -5 * seg(t, 0, 0.3);
+    else if (t < 1.3) ey = -5 * (1 - seg(t, 1.0, 1.3));
+    if (t > 2.4 && t < 6.0) { ex = 4 * Math.cos(theta) * spinAmt; ey = -4 * spinAmt; }
+    if (t > 4.7 && t < 7.1) { const k = seg(t, 4.7, 4.9) * (1 - seg(t, 5.8, 6.0)) + seg(t, 6.2, 6.4) * (1 - seg(t, 7.0, 7.1)); ex = lerp(ex, 5, k); ey = lerp(ey, 3, k); }
+    if (t >= 7.0 && t < 7.8) { ex = 5 * (1 - seg(t, 7.5, 7.8)); ey = lerp(3, -5, seg(t, 7.0, 7.3)) * (1 - seg(t, 7.5, 7.8)); }
+    if (t >= 8.4) ey = -5 * seg(t, 8.5, 8.8);
+    let blink = 1;
+    for (const b of [1.7, 4.3, 5.95, 8.05]) { const p = seg(t, b, b + 0.14); if (p > 0 && p < 1) blink = 1 - 0.9 * Math.sin(Math.PI * p); }
+    for (const [e, cx] of [[el.eyeL, 164], [el.eyeR, 240]]) {
+      e.setAttribute('cx', cx + ex); e.setAttribute('cy', 170 + ey); e.setAttribute('ry', 12 * blink);
+    }
+    const smileOn = seg(t, 1.05, 1.3) * (1 - seg(t, 8.8, 9));
+    el.smile.setAttribute('opacity', smileOn);
+    el.mouthO.setAttribute('opacity', 1 - smileOn);
+    el.mouthO.setAttribute('ry', 6 * (1 - smileOn * 0.5));
+
+    // ---- candy ----
+    let cv = t > 4.6 && t < 7.8, cx = CANDY[0], cy = CANDY[1], cr = 0, cs = 1;
+    if (t < 5.4) {
+      const p = seg(t, 4.6, 5.4);
+      cx = lerp(560, CANDY[0], eOut(p));
+      cy = CANDY[1] - Math.abs(Math.sin(p * Math.PI * 3)) * 26 * (1 - p);
+      cr = -30 * (1 - p);
+    } else if (t < 6.6) {
+      cr = 10 * Math.sin(t * 11);                        // taunting wiggle
+      cy = CANDY[1] - Math.abs(Math.sin(t * 7)) * 4;
+    } else if (t < 7.0) {
+      const p = seg(t, 6.6, 6.8);
+      cs = 1 - 0.12 * Math.sin(Math.PI * p);
+      cr = 8 * Math.sin(t * 40) * (1 - seg(t, 6.8, 7.0));
+    } else {
+      const p = eIn(seg(t, 7.0, 7.75));
+      const q = 1 - p;
+      cx = q * q * CANDY[0] + 2 * q * p * 250 + p * p * 640;
+      cy = q * q * CANDY[1] + 2 * q * p * -60 + p * p * -140;
+      cr = 720 * p;
+    }
+    show(el.candy, cv);
+    el.candy.setAttribute('transform', `translate(${cx} ${cy}) rotate(${cr}) scale(${cs})`);
+
+    // ---- lasso loop ----
+    let lv = t > SPIN_START && t < 7.8, rv = t > SPIN_START && t < 7.25;
+    let lcx = SPIN_C[0], lcy = SPIN_C[1], lrx = SPIN_R[0], lry = SPIN_R[1], th = theta, sag = 8;
+    const TH6 = (6.0 - SPIN_START) * OMEGA;
+    if (t < 2.9) {
+      const p = eOut(seg(t, SPIN_START, 2.9));
+      lcx = lerp(hand[0], SPIN_C[0], p); lcy = lerp(hand[1], SPIN_C[1], p);
+      lrx = lerp(4, SPIN_R[0], p); lry = lerp(2, SPIN_R[1], p);
+    } else if (t < 6.0) {
+      lcx += 6 * Math.cos(theta);
+    } else if (t < 6.6) {
+      const p = eIO(seg(t, 6.0, 6.6));
+      lcx = lerp(SPIN_C[0] + 6 * Math.cos(TH6), CANDY[0], p);
+      lcy = lerp(SPIN_C[1], CANDY[1], p) - 130 * 4 * p * (1 - p);
+      lrx = lerp(SPIN_R[0], 36, p); lry = lerp(SPIN_R[1], 12, p);
+      th = lerp(TH6 % TAU, Math.PI * 3, p);
+      sag = 8 + 40 * Math.sin(Math.PI * p);
+    } else if (t < 7.0) {
+      const p = eIO(seg(t, 6.6, 6.85));
+      lcx = CANDY[0]; lcy = CANDY[1];
+      lrx = lerp(36, 21, p); lry = lerp(12, 8, p);
+      th = Math.PI * 3; sag = lerp(8, 20, p);
+    } else {
+      lcx = cx; lcy = cy; lrx = 21; lry = 8; th = Math.PI * 3; sag = 0;
+    }
+    show(el.loopBack, lv); show(el.loopFront, lv); show(el.rope, rv); show(el.knot, rv);
+    if (lv) {
+      setD(el.loopBack, `M${lcx - lrx} ${lcy} A${lrx} ${lry} 0 0 1 ${lcx + lrx} ${lcy}`);
+      setD(el.loopFront, `M${lcx + lrx} ${lcy} A${lrx} ${lry} 0 0 1 ${lcx - lrx} ${lcy}`);
+    }
+    if (rv) {
+      const px = lcx + lrx * Math.cos(th), py = lcy + lry * Math.sin(th);
+      const mx = (hand[0] + px) / 2, my = (hand[1] + py) / 2 + sag;
+      setD(el.rope, `M${hand[0]} ${hand[1]} Q${mx} ${my} ${px} ${py}`);
+      el.knot.setAttribute('cx', px); el.knot.setAttribute('cy', py);
+    }
+
+    // ---- sparkles ----
+    const snap = seg(t, 7.2, 7.5);
+    sparkle(el.fx1, hand[0] + 18, hand[1] - 20, seg(t, 2.35, 2.8));
+    sparkle(el.fx2, snap > 0 && snap < 1 ? hand[0] + 30 : hand[0] - 14, snap > 0 && snap < 1 ? hand[1] - 6 : hand[1] - 26,
+      snap > 0 && snap < 1 ? snap : seg(t, 2.5, 2.95), 20);
+    sparkle(el.sh1, 140, 124, seg(t, 7.75, 8.35));
+    sparkle(el.sh2, 266, 236, seg(t, 7.95, 8.5), 30);
+  }
+
+  window.renderAt = render;
+
+  // ---- playback ----
+  const toggle = $('toggle'), restart = $('restart');
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let playing = !reduce, clock = reduce ? 4.0 : 0, last = null;
+  toggle.textContent = playing ? 'Pause' : 'Play';
+  render(clock);
+
+  function frame(now) {
+    if (window.__manual) return;
+    if (last !== null && playing) clock = (clock + (now - last) / 1000) % T;
+    last = now;
+    render(clock);
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+
+  toggle.addEventListener('click', () => {
+    playing = !playing;
+    toggle.textContent = playing ? 'Pause' : 'Play';
+  });
+  restart.addEventListener('click', () => {
+    clock = 0; playing = true; toggle.textContent = 'Pause';
+  });
+})();
+</script>
+</body>
+</html>

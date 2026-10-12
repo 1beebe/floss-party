@@ -14,6 +14,9 @@ Plain HTML, CSS and JavaScript with no build step and no dependencies.
 | `manifest.webmanifest` | Makes it installable ("Add to Home Screen") with its own icon and full-screen launch |
 | `sw.js` | Service worker that caches the app so it opens offline |
 | `icon.svg` | App icon |
+| `demo.html` | Preview build seeded with two months of sample history, for showing off the look (nothing saves) |
+| `animations/` | The Floss Tooth character animations: **Floss Lasso**, **Floss Hoop** and **Floss Limbo**, plus an index page |
+| `design/model-sheet/` | The Floss Tooth model sheet: turnaround, character rules, expressions, limbo pose study and palette |
 
 Your streak is stored in your own browser (`localStorage`), so every visitor gets a private tracker and nobody sees anyone else's days. The flip side is that clearing browser data erases your streak, and it does not follow you between devices. Rung 3 fixes that.
 
@@ -38,11 +41,11 @@ Each rung is shippable on its own, and each one teaches one layer of the stack.
 
 ### Ideas on the shelf
 
-- Tooth and floss character animations in the party.
+- Bring the Floss Tooth animations into the party itself (a random lasso, hoop or limbo on each tap), following the model sheet.
 - Longest-streak starburst celebration.
 - Export-my-streak backup button.
 - More music styles to shuffle between (lo-fi, house, chiptune).
 
 ## Origin
 
-Built with Claude in one sitting in August 2026, and stress-tested by a kid who found a real bug (a double tap used to play two songs at once). Made by [Ligaya Beebe](https://lbeebe.com).
+The tracker was built with Claude in one sitting in August 2026; the Floss Tooth character and its three animations followed in September, and stress-tested by a kid who found a real bug (a double tap used to play two songs at once). Made by [Ligaya Beebe](https://lbeebe.com).

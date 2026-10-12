@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Floss Limbo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Figtree:wght@500;700&display=swap">
+<style>
+  :root {
+    --marigold: #FFB22E;
+    --marigold-deep: #F09A18;
+    --enamel: #FBF6EC;
+    --ink: #262A27;
+    --floss: #BFF2DC;
+  }
+  html, body { height: 100%; }
+  body {
+    background: var(--marigold);
+    color: var(--ink);
+    font-family: "Figtree", system-ui, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-inline: 16px;
+    padding-block: 24px;
+    box-sizing: border-box;
+  }
+  .wrap { width: 100%; max-width: 560px; display: flex; flex-direction: column; gap: 14px; }
+  svg.stage { width: 100%; max-width: 100%; aspect-ratio: 1 / 1; height: auto; display: block; overflow: hidden; }
+  .bar { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  h1 {
+    font-family: "Lilita One", Impact, system-ui, sans-serif;
+    font-weight: 400;
+    font-size: clamp(26px, 6vw, 36px);
+    margin: 0;
+    color: var(--enamel);
+    text-shadow: 2px 2px 0 var(--ink);
+    letter-spacing: .03em;
+  }
+  .meta { font-size: 13px; color: var(--ink); opacity: .8; margin: 4px 0 0; }
+  .controls { display: flex; gap: 8px; }
+  button {
+    font: 700 13px/1 "Figtree", system-ui, sans-serif;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--ink);
+    background: var(--enamel);
+    border: 3px solid var(--ink);
+    border-radius: 999px;
+    padding: 9px 14px;
+    cursor: pointer;
+    box-shadow: 2px 2px 0 var(--ink);
+  }
+  button:active { transform: translate(2px, 2px); box-shadow: none; }
+  button:focus-visible { outline: 3px solid var(--floss); outline-offset: 2px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <svg class="stage" viewBox="-58 -40 520 520" role="img" aria-label="A cartoon tooth, turned three-quarters toward us, limbos under a strand of mint floss tied between two standing toothbrushes. It bends its root legs at the knees, arches back and shuffles under. The floss drops a notch for the second pass, and the tooth goes lower.">
+    <defs>
+      <path id="sparkle" d="M0 -12 C1.5 -3 3 -1.5 12 0 C3 1.5 1.5 3 0 12 C-1.5 3 -3 1.5 -12 0 C-3 -1.5 -1.5 -3 0 -12Z"/>
+      <g id="brush">
+        <g stroke="#262A27" stroke-width="5" stroke-linejoin="round">
+          <rect x="16" y="-362" width="16" height="54" rx="3" fill="#FBF6EC"/>
+          <rect class="c" x="-12" y="-270" width="24" height="270" rx="12"/>
+          <rect class="c" x="-7" y="-312" width="14" height="48"/>
+          <rect class="c" x="-13" y="-370" width="30" height="66" rx="11"/>
+        </g>
+        <path d="M20 -352 L28 -352 M20 -340 L28 -340 M20 -328 L28 -328 M20 -316 L28 -316" stroke="#262A27" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M-12 -90 L-4 -90 M-12 -120 L-4 -120 M-12 -150 L-4 -150 M-12 -180 L-4 -180 M-12 -210 L-4 -210 M-12 -240 L-4 -240" stroke="#262A27" stroke-width="3" stroke-linecap="round"/>
+      </g>
+    </defs>
+
+    <g id="scene" transform="translate(-30 76) scale(0.8)">
+      <!-- dance floor, seen from a low camera -->
+      <ellipse cx="290" cy="318" rx="500" ry="66" fill="#F09A18"/>
+
+      <!-- far toothbrush -->
+      <ellipse cx="440" cy="274" rx="22" ry="4" fill="#D98612"/>
+      <g transform="translate(440 272) scale(0.9)"><use href="#brush" style="fill:#1FA89A"/></g>
+
+      <!-- far half of the floss -->
+      <g id="barBack" fill="none" stroke-linecap="round">
+        <path class="o" stroke="#262A27" stroke-width="8"/>
+        <path class="i" stroke="#BFF2DC" stroke-width="3.5"/>
+      </g>
+      <circle id="knotBack" r="5" fill="#BFF2DC" stroke="#262A27" stroke-width="3"/>
+
+      <ellipse id="shadow" cx="202" cy="322" rx="86" ry="8" fill="#D98612"/>
+
+      <!-- the tooth, three-quarter view: crown on top, roots as bendable legs -->
+      <g id="char" stroke-linecap="round" stroke-linejoin="round" fill="none">
+        <path id="legFo" stroke="#262A27" stroke-width="50"/>
+        <path id="legFi" stroke="#E8DFCF" stroke-width="36"/>
+        <path id="legNo" stroke="#262A27" stroke-width="56"/>
+        <path id="legNi" stroke="#FBF6EC" stroke-width="42"/>
+
+        <g id="crown">
+          <g stroke="#262A27" stroke-width="7" fill="#FBF6EC">
+            <g id="armFs"><rect x="-16" y="-12" width="52" height="24" rx="12"/></g>
+            <g id="armNs"><rect x="-16" y="-12" width="52" height="24" rx="12"/></g>
+            <path id="crownPath" d="M124 222 L116 192 C110 170 108 152 108 136 C108 100 126 80 156 80 C186 80 204 94 222 98 C236 92 250 82 268 83 C290 84 298 104 298 136 C298 152 296 170 292 190 L286 220 C282 246 264 262 240 262 C226 262 220 254 212 254 C202 254 192 262 172 262 C146 262 128 246 124 222 Z"/>
+          </g>
+          <g fill="#FBF6EC" stroke="none">
+            <g id="armNf"><rect x="-12.5" y="-8.5" width="45" height="17" rx="8.5"/></g>
+          </g>
+          <g id="face">
+            <ellipse id="eyeN" cx="192" cy="170" rx="9" ry="12" fill="#262A27" stroke="none"/>
+            <ellipse id="eyeF" cx="256" cy="168" rx="6.5" ry="11.5" fill="#262A27" stroke="none"/>
+            <ellipse id="mouthO" cx="226" cy="207" rx="3.5" ry="4.5" fill="#262A27" stroke="none"/>
+            <path id="flat" d="M219 206 L233 206" stroke="#262A27" stroke-width="5"/>
+            <path id="smile" d="M213 198 Q226 211 239 198" stroke="#262A27" stroke-width="5"/>
+          </g>
+          <path id="sweat" d="M0 -12 C5 -4 8 0 8 4 C8 9 4 12 0 12 C-4 12 -8 9 -8 4 C-8 0 -5 -4 0 -12Z" fill="#9FD8F5" stroke="#262A27" stroke-width="3"/>
+        </g>
+
+        <!-- short fill cap that blends the near root into the crown -->
+        <path id="capN" stroke="#FBF6EC" stroke-width="42"/>
+      </g>
+
+      <!-- near half of the floss -->
+      <g id="barFront" fill="none" stroke-linecap="round">
+        <path class="o" stroke="#262A27" stroke-width="8"/>
+        <path class="i" stroke="#BFF2DC" stroke-width="3.5"/>
+      </g>
+
+      <!-- near toothbrush -->
+      <ellipse cx="140" cy="366" rx="27" ry="5" fill="#D98612"/>
+      <g transform="translate(140 364) scale(1.1)"><use href="#brush" style="fill:#FF6F91"/></g>
+      <circle id="knotFront" r="5.5" fill="#BFF2DC" stroke="#262A27" stroke-width="3"/>
+
+      <g fill="#FBF6EC" stroke="#262A27" stroke-width="2.2">
+        <use href="#sparkle" id="fx1"/>
+        <use href="#sparkle" id="fx2"/>
+        <use href="#sparkle" id="fx3"/>
+      </g>
+    </g>
+  </svg>
+
+  <div class="bar">
+    <div>
+      <h1>Floss Limbo</h1>
+      <p class="meta">How low can you floss? Knees forward, crown back, and the bar drops a notch.</p>
+    </div>
+    <div class="controls">
+      <button id="toggle" type="button">Pause</button>
+      <button id="restart" type="button">Replay</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const PASS = 4.6, T = PASS * 2;
+  const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+  const seg = (t, a, b) => clamp((t - a) / (b - a));
+  const lerp = (a, b, p) => a + (b - a) * p;
+  const eIO = p => p < .5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2;
+  const rad = d => d * Math.PI / 180;
+  const smooth = p => p * p * (3 - 2 * p);
+
+  function kf(t, keys, ease = eIO) {
+    if (t <= keys[0][0]) return keys[0][1];
+    for (let i = 1; i < keys.length; i++) {
+      if (t <= keys[i][0]) {
+        const [t0, v0] = keys[i - 1], [t1, v1] = keys[i];
+        return lerp(v0, v1, ease((t - t0) / (t1 - t0)));
+      }
+    }
+    return keys[keys.length - 1][1];
+  }
+
+  const $ = id => document.getElementById(id);
+  const el = {};
+  for (const id of ['crown', 'crownPath', 'face', 'shadow', 'legFo', 'legFi', 'legNo', 'legNi', 'capN',
+    'armFs', 'armNs', 'armNf', 'eyeN', 'eyeF', 'mouthO', 'flat', 'smile', 'sweat',
+    'barBack', 'barFront', 'knotBack', 'knotFront', 'fx1', 'fx2', 'fx3']) el[id] = $(id);
+  const setD = (g, d) => g.querySelectorAll('path').forEach(p => p.setAttribute('d', d));
+  const show = (node, on) => node.setAttribute('visibility', on ? 'visible' : 'hidden');
+
+  // ---- rig ----
+  const G = 318, FOOT_Y = G - 28;
+  const PELVIS = [206, 236], HIP_N = -26, HIP_F = 30, THIGH = 54, SHIN = 46, STRIDE = 26, UP_HP = 90;
+  const SHOULDER_N = [118, 205], SHOULDER_F = [290, 205];
+  const FRONT = [140, 364, 1.1], BACK = [440, 272, 0.9], MID_X = 290;
+  // lean: how far the crown tips back; hp: hip height; sx, sy: how much the crown squashes into the arch
+  const PASSES = [ { lean: 36, hp: 46, sx: 0.92, sy: 0.92 }, { lean: 54, hp: 30, sx: 0.86, sy: 0.78 } ];
+
+  const LEN = el.crownPath.getTotalLength();
+  const outline = [];
+  for (let i = 0; i < 200; i++) { const p = el.crownPath.getPointAtLength(LEN * i / 200); outline.push([p.x, p.y]); }
+
+  function ik(h, f) {
+    let vx = f[0] - h[0], vy = f[1] - h[1];
+    let d = Math.hypot(vx, vy);
+    const max = THIGH + SHIN - 0.5;
+    if (d > max) { f = [h[0] + vx / d * max, h[1] + vy / d * max]; vx = f[0] - h[0]; vy = f[1] - h[1]; d = max; }
+    const ux = vx / d, uy = vy / d;
+    let nx = uy, ny = -ux;                       // the perpendicular that points forward (+x)
+    if (nx < 0 || (Math.abs(nx) < 1e-3 && ny > 0)) { nx = -nx; ny = -ny; }
+    const off = Math.sqrt(Math.max(0, THIGH * THIGH - (d / 2) * (d / 2)));
+    return { knee: [h[0] + ux * d / 2 + nx * off, h[1] + uy * d / 2 + ny * off], foot: f };
+  }
+
+  function rig(t) {
+    t = ((t % T) + T) % T;
+    const k = Math.floor(t / PASS), u = t - k * PASS, P = PASSES[k];
+    const X = kf(u, [[0, -200], [1.0, 105], [1.25, 160], [3.55, 520], [4.6, 760]], p => p);
+    const pose = smooth(seg(X, 60, 150)) * (1 - smooth(seg(X, 540, 640)));
+    const phi = P.lean * pose + 2 * Math.sin(t * 11) * pose;
+    const hp = lerp(UP_HP, P.hp, pose);
+    const sx = lerp(1, P.sx, pose), sy = lerp(1, P.sy, pose);
+    const footOff = lerp(6, 58, pose);
+
+    const feet = [0, 1].map(i => {
+      const phase = i * STRIDE;
+      const q = (X + footOff + phase) / (2 * STRIDE);
+      const n = Math.floor(q), fr = q - n;
+      const swing = smooth(clamp((fr - 0.5) * 2));
+      return { x: (n + swing) * 2 * STRIDE - phase + STRIDE / 2, lift: 13 * Math.sin(Math.PI * swing), q };
+    });
+    const bob = -3 * Math.abs(Math.sin(feet[0].q * Math.PI * 2));
+    const pel = [X, FOOT_Y - hp + bob];
+    const c = Math.cos(rad(phi)), s = Math.sin(rad(phi));
+    const toWorld = (x, y) => {
+      const dx = (x - PELVIS[0]) * sx, dy = (y - PELVIS[1]) * sy;
+      return [pel[0] + dx * c + dy * s, pel[1] - dx * s + dy * c];
+    };
+    // the pelvis stays nearly level: the arch happens above it, in the crown
+    const pc = Math.cos(rad(phi * 0.25)), ps = Math.sin(rad(phi * 0.25));
+    const hipAt = dx => [pel[0] + dx * pc, pel[1] - dx * ps];
+    const hipN = hipAt(HIP_N), hipF = hipAt(HIP_F);
+    // the far foot sits a touch higher on screen: it is further from the low camera
+    const legN = ik(hipN, [feet[0].x, FOOT_Y - feet[0].lift]);
+    const legF = ik(hipF, [feet[1].x + 6, FOOT_Y - 4 - feet[1].lift]);
+    // arms: pumping on the walk, near arm up and back for balance underneath
+    const pump = 16 * Math.sin(X / (2 * STRIDE) * Math.PI * 2);
+    let aN = lerp(30 - pump, -10 - phi + 10 * Math.sin(t * 9 + Math.PI), pose);
+    let aF = lerp(30 + pump, -20 + 16 * Math.sin(t * 9), pose);
+    if (k === 1) { const cheer = smooth(seg(u, 3.5, 3.8)); aN = lerp(aN, -65 - 10 * Math.sin(t * 20), cheer); aF = lerp(aF, -65 + 10 * Math.sin(t * 20), cheer); }
+    const armLen = lerp(1, 0, smooth(clamp(pose * 1.4)));   // near arm tucks away under the arched crown
+    const armTip = toWorld(SHOULDER_N[0] - 40 * armLen * Math.cos(rad(aN)), SHOULDER_N[1] + 40 * armLen * Math.sin(rad(aN)));
+    return { t, k, u, X, pose, phi, sx, sy, pel, hipN, hipF, legN, legF, toWorld, aN, aF, armTip, armLen };
+  }
+
+  // The floss sits just above whatever part of the tooth passes under it on each pass
+  function topAtBar(r) {
+    let top = 1e9;
+    for (const [x, y] of outline) { const [wx, wy] = r.toWorld(x, y); if (Math.abs(wx - MID_X) < 4 && wy < top) top = wy; }
+    if (Math.abs(r.armTip[0] - MID_X) < 14) top = Math.min(top, r.armTip[1] - 14);
+    for (const [leg, rr] of [[[r.hipN, r.legN.knee, r.legN.foot], 28], [[r.hipF, r.legF.knee, r.legF.foot], 25]]) {
+      for (let j = 0; j < 2; j++) for (let i = 0; i <= 20; i++) {
+        const x = lerp(leg[j][0], leg[j + 1][0], i / 20), y = lerp(leg[j][1], leg[j + 1][1], i / 20);
+        const dx = Math.abs(x - MID_X);
+        if (dx < rr) top = Math.min(top, y - Math.sqrt(rr * rr - dx * dx));
+      }
+    }
+    return top;
+  }
+  for (let k = 0; k < 2; k++) {
+    let top = 1e9;
+    for (let u = 0; u < PASS; u += 0.01) top = Math.min(top, topAtBar(rig(k * PASS + u)));
+    PASSES[k].H = G - top + 12;
+  }
+  const [H1, H2] = PASSES.map(p => p.H);
+
+  function sparkle(node, x, y, p, rot = 0) {
+    const s = Math.sin(Math.PI * clamp(p));
+    show(node, s > 0.01);
+    node.setAttribute('transform', `translate(${x} ${y}) rotate(${rot + p * 90}) scale(${s * 1.9})`);
+  }
+  const line = pts => 'M' + pts.map(p => p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join(' L');
+
+  function render(time) {
+    const r = rig(time), { t, k, u, pose, phi, sx, sy, pel } = r;
+
+    el.crown.setAttribute('transform',
+      `translate(${pel[0]} ${pel[1]}) rotate(${-phi}) scale(${sx} ${sy}) translate(${-PELVIS[0]} ${-PELVIS[1]})`);
+
+    const dN = line([r.hipN, r.legN.knee, r.legN.foot]), dF = line([r.hipF, r.legF.knee, r.legF.foot]);
+    el.legNo.setAttribute('d', dN); el.legNi.setAttribute('d', dN);
+    el.legFo.setAttribute('d', dF); el.legFi.setAttribute('d', dF);
+    const kn = r.legN.knee, h = r.hipN, vx = kn[0] - h[0], vy = kn[1] - h[1], vd = Math.hypot(vx, vy) || 1;
+    el.capN.setAttribute('d', line([h, [h[0] + vx / vd * 18, h[1] + vy / vd * 18]]));
+
+    const fx = (r.legN.foot[0] + r.legF.foot[0]) / 2;
+    el.shadow.setAttribute('cx', lerp(fx, pel[0] - 40, pose));
+    el.shadow.setAttribute('rx', 70 + 60 * pose);
+    el.shadow.setAttribute('cy', G + 3);
+
+    const { aN, aF, armLen } = r;
+    el.armNs.setAttribute('transform', `translate(${SHOULDER_N}) scale(-1 1) rotate(${aN}) scale(${armLen} 1)`);
+    el.armNf.setAttribute('transform', `translate(${SHOULDER_N}) scale(-1 1) rotate(${aN}) scale(${armLen} 1)`);
+    show(el.armNs, armLen > 0.08); show(el.armNf, armLen > 0.08);
+    el.armFs.setAttribute('transform', `translate(${SHOULDER_F}) rotate(${aF}) scale(0.7 1)`);
+
+    // face: lifts toward the floss as the crown arches back
+    // the face rides on the crown; as the crown arches back the face tilts toward the sky,
+    // so it shortens along the crown's own up-down axis and slides toward the top
+    const fy = 1 - 0.22 * pose;
+    el.face.setAttribute('transform', `translate(${2 * pose} ${-8 * pose}) translate(224 186) scale(1 ${fy}) translate(-224 -186)`);
+    let blink = 1;
+    for (const b of [0.3, 4.9]) { const p = seg(t, b, b + 0.14); if (p > 0 && p < 1) blink = 1 - 0.9 * Math.sin(Math.PI * p); }
+    const focus = smooth(clamp((pose - 0.4) / 0.4));
+    el.eyeN.setAttribute('ry', 12 * blink * (1 - 0.25 * focus));
+    el.eyeF.setAttribute('ry', 11.5 * blink * (1 - 0.25 * focus));
+    el.smile.setAttribute('opacity', 1 - focus);
+    el.flat.setAttribute('opacity', k === 0 ? focus : 0);                 // focused on pass one
+    el.mouthO.setAttribute('opacity', k === 1 ? focus : 0);               // straining on pass two
+    el.mouthO.setAttribute('ry', 4.5 + 1.2 * Math.sin(t * 9) * focus);
+    const sweatOn = k === 1 ? focus : 0;
+    show(el.sweat, sweatOn > 0.01);
+    el.sweat.setAttribute('transform', `translate(${284 + 2 * Math.sin(t * 8)} ${108 + ((u * 40) % 14)}) scale(${sweatOn})`);
+
+    // floss: drops a notch after pass one, springs back after pass two
+    const H = kf(t, [[0, H1], [4.0, H1], [4.4, H2], [8.6, H2], [8.95, H1 + 22], [9.2, H1]]);
+    const tremble = 1.6 * Math.sin(t * 70) * focus * (k === 1 ? 1 : 0.4);
+    const bY = BACK[1] - H * BACK[2], fY = FRONT[1] - H * FRONT[2];
+    const mY = G - H + 3 + tremble;
+    setD(el.barBack, `M${BACK[0]} ${bY} Q${(BACK[0] + MID_X) / 2} ${(bY + mY) / 2 + 1.5} ${MID_X} ${mY}`);
+    setD(el.barFront, `M${MID_X} ${mY} Q${(FRONT[0] + MID_X) / 2} ${(fY + mY) / 2 + 1.5} ${FRONT[0]} ${fY}`);
+    el.knotBack.setAttribute('cx', BACK[0]); el.knotBack.setAttribute('cy', bY);
+    el.knotFront.setAttribute('cx', FRONT[0]); el.knotFront.setAttribute('cy', fY);
+
+    sparkle(el.fx1, MID_X - 34, mY - 30, seg(u, 3.3, 3.85));
+    sparkle(el.fx2, MID_X + 26, mY - 44, seg(u, 3.45, 4.0), 25);
+    sparkle(el.fx3, MID_X + 4, mY - 74, k === 1 ? seg(u, 3.6, 4.15) : 0, 45);
+  }
+
+  window.renderAt = render;
+  window.__limbo = { PASSES, rig, G };
+
+  const toggle = $('toggle'), restart = $('restart');
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let playing = !reduce, clock = reduce ? 6.9 : 0, last = null;
+  toggle.textContent = playing ? 'Pause' : 'Play';
+  render(clock);
+
+  function frame(now) {
+    if (window.__manual) return;
+    if (last !== null && playing) clock = (clock + (now - last) / 1000) % T;
+    last = now;
+    render(clock);
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+
+  toggle.addEventListener('click', () => { playing = !playing; toggle.textContent = playing ? 'Pause' : 'Play'; });
+  restart.addEventListener('click', () => { clock = 0; playing = true; toggle.textContent = 'Pause'; });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Floss Hoop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chewy&family=Figtree:wght@500;700&display=swap">
+<style>
+  :root {
+    --sky: #4C86F0;
+    --sky-deep: #3A6FD8;
+    --enamel: #FBF6EC;
+    --ink: #262A27;
+    --floss: #BFF2DC;
+  }
+  html, body { height: 100%; }
+  body {
+    background: var(--sky);
+    color: var(--ink);
+    font-family: "Figtree", system-ui, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-inline: 16px;
+    padding-block: 24px;
+    box-sizing: border-box;
+  }
+  .wrap { width: 100%; max-width: 560px; display: flex; flex-direction: column; gap: 14px; }
+  svg.stage { width: 100%; max-width: 100%; aspect-ratio: 1 / 1; height: auto; display: block; overflow: visible; }
+  .bar { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  h1 {
+    font-family: "Chewy", "Comic Sans MS", system-ui, sans-serif;
+    font-weight: 400;
+    font-size: clamp(26px, 6vw, 36px);
+    margin: 0;
+    color: var(--enamel);
+    text-shadow: 2px 2px 0 var(--ink);
+    letter-spacing: .03em;
+  }
+  .meta { font-size: 13px; color: var(--ink); opacity: .8; margin: 4px 0 0; }
+  .controls { display: flex; gap: 8px; }
+  button {
+    font: 700 13px/1 "Figtree", system-ui, sans-serif;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--ink);
+    background: var(--enamel);
+    border: 3px solid var(--ink);
+    border-radius: 999px;
+    padding: 9px 14px;
+    cursor: pointer;
+    box-shadow: 2px 2px 0 var(--ink);
+  }
+  button:active { transform: translate(2px, 2px); box-shadow: none; }
+  button:focus-visible { outline: 3px solid var(--floss); outline-offset: 2px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <svg class="stage" viewBox="-58 -40 520 520" role="img" aria-label="A cartoon tooth with a flower behind its ear catches a hoop of mint floss, hula hoops with its arms in the air, drops the hoop down to its roots and back up, lets it fall to the floor, bows, and tosses it back up.">
+    <defs>
+      <path id="sparkle" d="M0 -12 C1.5 -3 3 -1.5 12 0 C3 1.5 1.5 3 0 12 C-1.5 3 -3 1.5 -12 0 C-3 -1.5 -1.5 -3 0 -12Z"/>
+    </defs>
+
+    <ellipse id="shadow" cx="202" cy="330" rx="86" ry="10" fill="#3A6FD8"/>
+
+    <g id="hoopBack" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path class="o" stroke="#262A27" stroke-width="9"/>
+      <path class="i" stroke="#BFF2DC" stroke-width="4"/>
+    </g>
+
+    <g id="char">
+      <g stroke="#262A27" stroke-width="7" fill="#FBF6EC">
+        <g id="armLs"><rect x="-16" y="-12" width="52" height="24" rx="12"/></g>
+        <g id="armRs"><rect x="-16" y="-12" width="52" height="24" rx="12"/></g>
+        <path stroke-linejoin="round" d="M112 222 C122 260 125 305 145 314 C165 323 180 312 182 290 C184 265 186 250 202 250 C218 250 220 265 222 290 C224 312 239 323 259 314 C279 305 282 260 292 222 L298 192 C304 170 306 150 306 135 C306 100 290 80 262 80 C236 80 222 94 202 96 C182 94 168 80 142 80 C114 80 98 100 98 135 C98 150 100 170 106 192 Z"/>
+      </g>
+      <g fill="#FBF6EC">
+        <g id="armLf"><rect x="-12.5" y="-8.5" width="45" height="17" rx="8.5"/></g>
+        <g id="armRf"><rect x="-12.5" y="-8.5" width="45" height="17" rx="8.5"/></g>
+      </g>
+      <ellipse id="eyeL" cx="164" cy="170" rx="9" ry="12" fill="#262A27"/>
+      <ellipse id="eyeR" cx="240" cy="170" rx="9" ry="12" fill="#262A27"/>
+      <ellipse id="mouthO" cx="202" cy="204" rx="5" ry="6" fill="#262A27"/>
+      <path id="smile" d="M188 198 Q202 212 216 198" fill="none" stroke="#262A27" stroke-width="5" stroke-linecap="round"/>
+      <g id="blush" fill="#F7A7B8" opacity=".7">
+        <ellipse cx="146" cy="196" rx="10" ry="5"/>
+        <ellipse cx="258" cy="196" rx="10" ry="5"/>
+      </g>
+
+      <!-- hibiscus tucked on the right lobe -->
+      <g id="flower" transform="translate(276 92)">
+        <g stroke="#262A27" stroke-width="4" stroke-linejoin="round" fill="#FF5C8A">
+          <path d="M0 0 C-10 -8 -12 -26 0 -28 C12 -26 10 -8 0 0Z" transform="rotate(0)"/>
+          <path d="M0 0 C-10 -8 -12 -26 0 -28 C12 -26 10 -8 0 0Z" transform="rotate(72)"/>
+          <path d="M0 0 C-10 -8 -12 -26 0 -28 C12 -26 10 -8 0 0Z" transform="rotate(144)"/>
+          <path d="M0 0 C-10 -8 -12 -26 0 -28 C12 -26 10 -8 0 0Z" transform="rotate(216)"/>
+          <path d="M0 0 C-10 -8 -12 -26 0 -28 C12 -26 10 -8 0 0Z" transform="rotate(288)"/>
+        </g>
+        <circle r="6" fill="#FFD23F" stroke="#262A27" stroke-width="3"/>
+      </g>
+    </g>
+
+    <g id="hoopFront" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path class="o" stroke="#262A27" stroke-width="9"/>
+      <path class="i" stroke="#BFF2DC" stroke-width="4"/>
+    </g>
+    <g id="knot">
+      <path d="M-2 0 C-10 8 -14 14 -12 20 M2 0 C8 9 14 12 18 16" fill="none" stroke="#262A27" stroke-width="7" stroke-linecap="round"/>
+      <path d="M-2 0 C-10 8 -14 14 -12 20 M2 0 C8 9 14 12 18 16" fill="none" stroke="#BFF2DC" stroke-width="3" stroke-linecap="round"/>
+      <circle r="5.5" fill="#BFF2DC" stroke="#262A27" stroke-width="3"/>
+    </g>
+
+    <g fill="#FBF6EC" stroke="#262A27" stroke-width="2.2">
+      <use href="#sparkle" id="fx1"/>
+      <use href="#sparkle" id="fx2"/>
+      <use href="#sparkle" id="fx3"/>
+    </g>
+  </svg>
+
+  <div class="bar">
+    <div>
+      <h1>Floss Hoop</h1>
+      <p class="meta">One strand of mint floss, tied in a loop and kept spinning. 8-second loop.</p>
+    </div>
+    <div class="controls">
+      <button id="toggle" type="button">Pause</button>
+      <button id="restart" type="button">Replay</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const T = 8;
+  const TAU = Math.PI * 2;
+  const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+  const seg = (t, a, b) => clamp((t - a) / (b - a));
+  const lerp = (a, b, p) => a + (b - a) * p;
+  const eIO = p => p < .5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2;
+  const eOut = p => 1 - (1 - p) * (1 - p);
+  const eIn = p => p * p;
+  const rad = d => d * Math.PI / 180;
+
+  function kf(t, keys) {
+    if (t <= keys[0][0]) return keys[0][1];
+    for (let i = 1; i < keys.length; i++) {
+      if (t <= keys[i][0]) {
+        const [t0, v0] = keys[i - 1], [t1, v1] = keys[i];
+        return lerp(v0, v1, eIO((t - t0) / (t1 - t0)));
+      }
+    }
+    return keys[keys.length - 1][1];
+  }
+
+  // Hoop spin rate (revolutions per second), and its integral as a lookup table
+  const REV = 1.7;
+  const rate = t => REV * seg(t, 1.0, 1.7) * (1 - seg(t, 6.0, 6.8));
+  const DT = 0.002, phiTable = [0];
+  for (let i = 1; i <= T / DT + 1; i++) phiTable[i] = phiTable[i - 1] + rate(i * DT) * TAU * DT;
+  const phiAt = t => { const x = t / DT, i = Math.floor(x); return lerp(phiTable[i], phiTable[i + 1] ?? phiTable[i], x - i); };
+
+  const $ = id => document.getElementById(id);
+  const el = {
+    char: $('char'), shadow: $('shadow'),
+    armLs: $('armLs'), armRs: $('armRs'), armLf: $('armLf'), armRf: $('armRf'),
+    eyeL: $('eyeL'), eyeR: $('eyeR'), mouthO: $('mouthO'), smile: $('smile'), blush: $('blush'),
+    flower: $('flower'), hoopBack: $('hoopBack'), hoopFront: $('hoopFront'), knot: $('knot'),
+    fx1: $('fx1'), fx2: $('fx2'), fx3: $('fx3')
+  };
+  const setD = (g, d) => g.querySelectorAll('path').forEach(p => p.setAttribute('d', d));
+  const show = (node, on) => node.setAttribute('visibility', on ? 'visible' : 'hidden');
+  const SHOULDER_L = [110, 205], SHOULDER_R = [294, 205];
+
+  function sparkle(node, x, y, p, rot = 0) {
+    const s = Math.sin(Math.PI * clamp(p));
+    show(node, s > 0.01);
+    node.setAttribute('transform', `translate(${x} ${y}) rotate(${rot + p * 90}) scale(${s * 1.9})`);
+  }
+
+  function render(t) {
+    t = ((t % T) + T) % T;
+    const phi = phiAt(t);
+    const amp = seg(t, 1.0, 1.7) * (1 - seg(t, 6.0, 6.7));   // how hard the hips are working
+
+    // ---- body: hip sway, squat, bow and hop ----
+    const sway = -9 * Math.cos(phi) * amp;
+    const lean = 5 * Math.sin(phi) * amp;
+    let bob = 0, sq = 0;
+    bob += -Math.abs(Math.sin(phi)) * 3 * amp;
+    const squat = Math.sin(Math.PI * seg(t, 4.0, 5.6)) * 0.07;         // dips while the hoop is low
+    const bow = Math.sin(Math.PI * seg(t, 6.8, 7.25)) * 0.1;
+    if (t > 7.2 && t < 7.75) bob += -36 * Math.sin(Math.PI * seg(t, 7.2, 7.75));
+    const landing = (t0, k) => { const d = t - t0; return d > 0 && d < 0.8 ? k * Math.exp(-d * 6) * Math.cos(d * 22) : 0; };
+    sq += squat + bow + landing(7.75, 0.08) + landing(1.05, 0.05);
+    const sy = 1 - sq, sx = 1 + sq * 0.7;
+    el.char.setAttribute('transform',
+      `translate(${sway} ${bob}) rotate(${lean} 202 318) translate(202 318) scale(${sx} ${sy}) translate(-202 -318)`);
+    const sh = 1 + bob / 120;
+    el.shadow.setAttribute('rx', 86 * sh * sx);
+    el.shadow.setAttribute('cx', 202 + sway * 0.5);
+    el.shadow.setAttribute('opacity', 0.6 + 0.4 * sh);
+
+    // ---- arms: up to catch, hula-waving while spinning, down for the bow ----
+    let aR = kf(t, [[0, -62], [1.0, -62], [1.4, -70], [6.0, -70], [6.4, 25], [6.8, 25], [7.0, 55], [7.25, 55], [7.45, -62], [8, -62]]);
+    let aL = aR;
+    const wave = 18 * amp;
+    aR += wave * Math.sin(phi * 0.5);
+    aL += wave * Math.sin(phi * 0.5 + Math.PI);
+    const reach = 8 * Math.sin(t * 14) * (1 - seg(t, 0.8, 1.0)) + 8 * Math.sin(t * 14) * seg(t, 7.5, 7.7);
+    aR += reach; aL -= reach;
+    el.armRs.setAttribute('transform', `translate(${SHOULDER_R}) rotate(${aR})`);
+    el.armRf.setAttribute('transform', `translate(${SHOULDER_R}) rotate(${aR})`);
+    el.armLs.setAttribute('transform', `translate(${SHOULDER_L}) scale(-1 1) rotate(${aL})`);
+    el.armLf.setAttribute('transform', `translate(${SHOULDER_L}) scale(-1 1) rotate(${aL})`);
+
+    // ---- flower bounces a little with the hips ----
+    el.flower.setAttribute('transform', `translate(276 92) rotate(${8 * Math.sin(phi) * amp + phi * 0}) scale(${1 + 0.06 * Math.abs(Math.cos(phi)) * amp})`);
+
+    // ---- hoop ----
+    const WAIST = 228, ROOTS = 292, FLOOR = 326;
+    let hcx = 202, hcy = WAIST, hrx = 132, hry = 22, tilt = 0;
+    if (t < 1.05) {
+      const p = seg(t, 0.0, 1.05);
+      hcy = lerp(-150, WAIST, eIn(p));
+      tilt = 10 * Math.sin(t * 6) * (1 - p);
+    } else if (t < 6.8) {
+      const low = eIO(seg(t, 4.0, 4.5)) * (1 - eIO(seg(t, 5.1, 5.6)));
+      const drop = eIn(seg(t, 6.0, 6.8));
+      hcy = lerp(lerp(WAIST, ROOTS, low), FLOOR, drop);
+      hcx = 202 + sway + 26 * Math.cos(phi) * amp;
+      hcy += 5 * Math.sin(phi) * amp;
+      tilt = 7 * Math.cos(phi) * amp;
+      hry = lerp(22, 18, drop);
+    } else if (t < 7.3) {
+      hcy = FLOOR; hry = 18;
+      tilt = 3 * Math.exp(-(t - 6.8) * 8) * Math.sin((t - 6.8) * 40);
+    } else {
+      const p = eOut(seg(t, 7.3, 8.0));
+      hcy = lerp(FLOOR, -150, p);
+      hry = lerp(18, 22, p);
+      tilt = -8 * p;
+    }
+    const pts = (from, to) => {
+      const out = [];
+      const c = Math.cos(rad(tilt)), s = Math.sin(rad(tilt));
+      for (let i = 0; i <= 36; i++) {
+        const a = lerp(from, to, i / 36);
+        const x = hrx * Math.cos(a), y = hry * Math.sin(a);
+        out.push(`${(hcx + x * c - y * s).toFixed(1)} ${(hcy + x * s + y * c).toFixed(1)}`);
+      }
+      return 'M' + out.join(' L');
+    };
+    setD(el.hoopBack, pts(Math.PI, TAU));   // upper arc sits behind the tooth
+    setD(el.hoopFront, pts(0, Math.PI));    // lower arc passes in front
+    // the knot rides around the hoop
+    const ka = phi + 1.2;
+    const kx = hrx * Math.cos(ka), ky = hry * Math.sin(ka);
+    const c = Math.cos(rad(tilt)), s = Math.sin(rad(tilt));
+    const front = Math.sin(ka) > 0;
+    show(el.knot, front);
+    el.knot.setAttribute('transform', `translate(${hcx + kx * c - ky * s} ${hcy + kx * s + ky * c})`);
+
+    // ---- face ----
+    let ex = 0, ey = 0;
+    if (t < 1.1) ey = -5 * (1 - seg(t, 0.9, 1.1));
+    else if (t < 6.0) { ex = 4 * Math.cos(phi) * amp; ey = 2 * amp; }
+    if (t > 6.0 && t < 7.0) { ex = 0; ey = 6 * seg(t, 6.0, 6.5); }
+    if (t >= 7.0) ey = lerp(6, -5, seg(t, 7.2, 7.6));
+    let blink = 1;
+    for (const b of [2.2, 3.6, 5.0]) { const p = seg(t, b, b + 0.14); if (p > 0 && p < 1) blink = 1 - 0.9 * Math.sin(Math.PI * p); }
+    const closed = Math.sin(Math.PI * seg(t, 6.85, 7.25));             // eyes shut for the bow
+    blink = Math.min(blink, 1 - 0.85 * closed);
+    for (const [e, cx] of [[el.eyeL, 164], [el.eyeR, 240]]) {
+      e.setAttribute('cx', cx + ex); e.setAttribute('cy', 170 + ey); e.setAttribute('ry', 12 * blink);
+    }
+    const smileOn = seg(t, 1.0, 1.25) * (1 - seg(t, 7.55, 7.8));
+    el.smile.setAttribute('opacity', smileOn);
+    el.mouthO.setAttribute('opacity', 1 - smileOn);
+    el.blush.setAttribute('opacity', 0.75 * seg(t, 1.3, 1.8) * (1 - seg(t, 7.3, 7.6)));
+
+    // ---- sparkles ----
+    sparkle(el.fx1, 40, 150, seg(t, 2.6, 3.2));
+    sparkle(el.fx2, 360, 110, seg(t, 3.0, 3.6), 30);
+    sparkle(el.fx3, t < 6 ? 330 : 350, t < 6 ? 250 : 300, t < 6 ? seg(t, 5.5, 6.0) : seg(t, 6.75, 7.3), 15);
+  }
+
+  window.renderAt = render;
+
+  const toggle = $('toggle'), restart = $('restart');
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let playing = !reduce, clock = reduce ? 3.2 : 0, last = null;
+  toggle.textContent = playing ? 'Pause' : 'Play';
+  render(clock);
+
+  function frame(now) {
+    if (window.__manual) return;
+    if (last !== null && playing) clock = (clock + (now - last) / 1000) % T;
+    last = now;
+    render(clock);
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+
+  toggle.addEventListener('click', () => { playing = !playing; toggle.textContent = playing ? 'Pause' : 'Play'; });
+  restart.addEventListener('click', () => { clock = 0; playing = true; toggle.textContent = 'Pause'; });
+})();
+</script>
+</body>
+</html>
