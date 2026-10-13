@@ -129,6 +129,16 @@
   .iconbtn:focus-visible{outline:2px solid var(--mint);outline-offset:2px}
   .tools{display:flex;gap:8px;flex:0 0 auto}
 
+  /* ---------- Daily reminder sheet (iPhone app only) ---------- */
+  .remind{border:none;border-radius:20px;padding:22px 20px 18px;width:min(340px,calc(100vw - 32px));background:var(--card);color:var(--ink);box-shadow:var(--shadow)}
+  .remind::backdrop{background:rgba(10,20,16,.45)}
+  .remind h2{font-family:"Fredoka",sans-serif;font-weight:600;font-size:1.25rem;margin:0 0 6px}
+  .remind p{margin:0 0 14px;color:var(--ink-soft);font-size:.92rem;line-height:1.45}
+  .remind input[type=time]{display:block;width:100%;font:inherit;font-size:1.3rem;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--card-2);color:var(--ink);margin-bottom:16px}
+  .remind .row{display:flex;gap:8px}
+  .remind .row button{flex:1;appearance:none;font:inherit;font-weight:700;padding:11px 10px;border-radius:12px;cursor:pointer;border:1px solid var(--line);background:var(--card-2);color:var(--ink-soft)}
+  .remind .row button.go{background:var(--mint);border-color:transparent;color:var(--btn-ink)}
+
   /* ---------- Stat row ---------- */
   .stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
   .stat{
@@ -333,6 +343,7 @@
       <div class="tools">
         <button class="iconbtn" id="themeBtn" title="Toggle light / dark" aria-label="Switch theme">🌙</button>
         <button class="iconbtn" id="soundBtn" title="Toggle party sound" aria-label="Toggle party sound">🔊</button>
+        <button class="iconbtn" id="remindBtn" title="Daily reminder" aria-label="Set a daily floss reminder" hidden>🔕</button>
       </div>
     </header>
 
@@ -385,6 +396,16 @@
   </div>
 
   <div class="toast" id="toast"></div>
+
+  <dialog class="remind" id="remindDlg" aria-labelledby="remindTitle">
+    <h2 id="remindTitle">Daily floss reminder</h2>
+    <p>Pick a time. You'll only get the nudge on days you haven't flossed yet.</p>
+    <input type="time" id="remindTime" value="21:00" aria-label="Reminder time">
+    <div class="row">
+      <button type="button" id="remindOff">Turn off</button>
+      <button type="button" class="go" id="remindSave">Save</button>
+    </div>
+  </dialog>
 
 <script>
 (function(){
@@ -505,12 +526,13 @@
   function renderAll(){renderStats();renderButton();renderCalendar();}
 
   /* ---------- persist a change ---------- */
-  function commit(){ saveLS(); renderAll(); }
+  function commit(){ saveLS(); renderAll(); scheduleReminders(); }
 
   // Tap any past day (or today) on the calendar to fix a mistake — quiet toggle, no party.
   function toggleDay(k){
     if(days.has(k)){ days.delete(k); commit(); toast("Removed"); }
     else { days.add(k); commit(); toast("Added ✨"); }
+    buzz();
   }
 
   function markToday(){
@@ -518,6 +540,7 @@
       days.add(todayKey);
       commit();
     }
+    buzz("party");
     throwParty();
   }
   function undoToday(){
@@ -529,6 +552,65 @@
   /* ---------- toast ---------- */
   var toastT;
   function toast(msg){var t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");clearTimeout(toastT);toastT=setTimeout(function(){t.classList.remove("show");},1800);}
+
+  /* ---------- iPhone app extras: haptics + daily reminder ----------
+     Only active inside the Capacitor app (native/), where capacitor.js is injected.
+     On the website these are no-ops. */
+  var Cap=window.Capacitor, NATIVE=!!(Cap&&Cap.isNativePlatform&&Cap.isNativePlatform());
+  var Haptics=NATIVE?Cap.registerPlugin("Haptics"):null;
+  var Notes=NATIVE?Cap.registerPlugin("LocalNotifications"):null;
+  function buzz(kind){
+    if(!Haptics) return;
+    try{
+      if(kind==="party") Haptics.notification({type:"SUCCESS"});
+      else Haptics.impact({style:kind==="heavy"?"HEAVY":"LIGHT"});
+    }catch(e){}
+  }
+
+  // The reminder is a run of one-off notifications for the next two weeks, one per day
+  // at the chosen time, skipping days already flossed. It's rebuilt on every change and
+  // every launch, so marking today cancels today's nudge.
+  var LS_REMIND="flossparty.reminder", REMIND_DAYS=14, REMIND_BASE=1000;
+  function remindTime(){try{return localStorage.getItem(LS_REMIND)||"";}catch(e){return "";}}
+  function refreshRemindBtn(){
+    var b=document.getElementById("remindBtn"), on=!!remindTime();
+    b.textContent=on?"🔔":"🔕";
+    b.setAttribute("aria-label", on?"Daily reminder at "+remindTime()+", change it":"Set a daily floss reminder");
+  }
+  function scheduleReminders(){
+    if(!Notes) return Promise.resolve();
+    var ids=[]; for(var i=0;i<REMIND_DAYS;i++) ids.push({id:REMIND_BASE+i});
+    return Notes.cancel({notifications:ids}).catch(function(){}).then(function(){
+      var t=remindTime(); if(!t) return;
+      var hm=t.split(":"), now=new Date(), list=[];
+      for(var i=0;i<REMIND_DAYS;i++){
+        var at=addDays(today,i); at.setHours(+hm[0],+hm[1],0,0);
+        if(at<=now || days.has(key(at))) continue;
+        list.push({id:REMIND_BASE+i, title:"Floss Party 🦷", body:"Floss and the dance floor lights up. Your streak is waiting.", schedule:{at:at, allowWhileIdle:true}});
+      }
+      if(list.length) return Notes.schedule({notifications:list});
+    }).catch(function(){});
+  }
+  if(NATIVE){
+    var rb=document.getElementById("remindBtn"), dlg=document.getElementById("remindDlg");
+    rb.hidden=false; refreshRemindBtn(); scheduleReminders();
+    rb.addEventListener("click",function(){
+      document.getElementById("remindTime").value=remindTime()||"21:00";
+      dlg.showModal();
+    });
+    document.getElementById("remindSave").addEventListener("click",function(){
+      var t=document.getElementById("remindTime").value; if(!t) return;
+      Notes.requestPermissions().then(function(r){
+        if(r.display!=="granted"){ dlg.close(); toast("Turn on notifications in Settings"); return; }
+        try{localStorage.setItem(LS_REMIND,t);}catch(e){}
+        dlg.close(); refreshRemindBtn(); scheduleReminders(); buzz(); toast("Reminder set for "+t);
+      }).catch(function(){ dlg.close(); toast("Couldn't set the reminder"); });
+    });
+    document.getElementById("remindOff").addEventListener("click",function(){
+      try{localStorage.removeItem(LS_REMIND);}catch(e){}
+      dlg.close(); refreshRemindBtn(); scheduleReminders(); toast("Reminder off");
+    });
+  }
 
   /* ---- theme toggle: override the ambient light/dark and remember it ---- */
   var LS_THEME="flossparty.theme";

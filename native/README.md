@@ -4,7 +4,7 @@ This folder wraps the Floss Party web app in a native iOS app using [Capacitor](
 
 | Path | What it is |
 |---|---|
-| `copy-web.mjs` | Copies `index.html`, the manifest, the icon and `animations/` from the repo root into `www/` |
+| `copy-web.mjs` | Copies `index.html`, the manifest, the icon and `animations/` from the repo root into `www/`, and adds Capacitor's runtime script |
 | `capacitor.config.json` | App name, bundle ID (`com.lbeebe.flossparty`), and where the web files live |
 | `ios/` | The Xcode project. Open `ios/App/App.xcodeproj` |
 | `www/` | Generated copy of the web app. Ignored by git; never edit it by hand |
@@ -38,14 +38,16 @@ In Xcode, click the **App** project in the left sidebar → **App** target → *
 
 Plug in your iPhone and pick it instead of the simulator to try it on a real device.
 
-### 3. Make it more than a website
+### 3. Native touches (done)
 
-Apple's review guideline 4.2 ("minimum functionality") rejects apps that are just a website in a frame. Floss Party already runs fully offline from the bundle, which helps, and a couple of native touches make the case solid:
+Apple's review guideline 4.2 ("minimum functionality") rejects apps that are just a website in a frame. Floss Party runs fully offline from the bundle and adds two things only the app can do:
 
-- **Haptics** on the floss button and the party (`@capacitor/haptics`).
-- **A daily reminder notification** at a time you choose (`@capacitor/local-notifications`).
+- **Haptics.** A success buzz when you tap *I flossed!*, and a light tap when you fix a day on the calendar (`@capacitor/haptics`).
+- **A daily reminder.** A 🔔 button (only shown in the app) picks a time. Notifications are scheduled one day at a time for the next two weeks and skip any day you've already flossed, so you never get nagged after you're done (`@capacitor/local-notifications`). The list is rebuilt every time you open the app or change a day.
 
-These are the next code changes, and Claude can do them in this repo.
+`copy-web.mjs` adds Capacitor's browser runtime (`capacitor.js`) to the app's copy of `index.html`; the website itself never loads it, and the same code does nothing there.
+
+Try the reminder on a real iPhone: set it for two minutes from now, close the app, and wait.
 
 ### 4. Create the listing in App Store Connect
 
