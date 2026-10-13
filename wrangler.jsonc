@@ -1,0 +1,12 @@
+// Cloudflare Worker that serves Floss Party as static files at floss.lbeebe.com.
+// There is no server code: Cloudflare serves the files listed by "assets" directly.
+{
+  "name": "floss-party",
+  "compatibility_date": "2025-10-01",
+  "assets": {
+    "directory": "./"
+  },
+  "routes": [
+    { "pattern": "floss.lbeebe.com", "custom_domain": true }
+  ]
+}

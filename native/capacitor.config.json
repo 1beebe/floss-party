@@ -1,0 +1,8 @@
+{
+  "appId": "com.lbeebe.flossparty",
+  "appName": "Floss Party",
+  "webDir": "www",
+  "ios": {
+    "contentInset": "never"
+  }
+}

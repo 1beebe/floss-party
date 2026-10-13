@@ -17,6 +17,9 @@ Plain HTML, CSS and JavaScript with no build step and no dependencies.
 | `demo.html` | Preview build seeded with two months of sample history, for showing off the look (nothing saves) |
 | `animations/` | The seven Floss Tooth animations (**Lasso**, **Hoop**, **Limbo**, **Jump Rope**, **Swing**, **Whip** and **Web**), an index page, and `tooth-kit.js`, the shared on-model tooth the newer four are built from |
 | `design/model-sheet/` | The Floss Tooth model sheet: turnaround, character rules, expressions, limbo pose study and palette |
+| `privacy.html` | Privacy policy (nothing is collected), needed for the App Store listing |
+| `wrangler.jsonc`, `.assetsignore` | Cloudflare Worker settings that serve the site at floss.lbeebe.com. See [DEPLOY.md](DEPLOY.md) |
+| `native/` | Capacitor iOS shell for the App Store. See [native/README.md](native/README.md) |
 
 Your streak is stored in your own browser (`localStorage`), so every visitor gets a private tracker and nobody sees anyone else's days. The flip side is that clearing browser data erases your streak, and it does not follow you between devices. Rung 3 fixes that.
 
@@ -34,10 +37,10 @@ python3 -m http.server 8000
 Each rung is shippable on its own, and each one teaches one layer of the stack.
 
 1. **Static PWA** (done). The app above.
-2. **Live at floss.lbeebe.com.** Host on a static host (Cloudflare Pages, Netlify or GitHub Pages), add a `CNAME` DNS record for the `floss` subdomain on lbeebe.com, and get HTTPS. Optionally add real 30-second song previews from Apple's free iTunes Search API, with the synth as fallback.
+2. **Live at floss.lbeebe.com** (in progress). Hosted as a Cloudflare Worker with static assets (like lbeebe.com), deployed automatically from `main`, with the custom domain and HTTPS handled by Cloudflare. Step by step in [DEPLOY.md](DEPLOY.md). Optionally add real 30-second song previews from Apple's free iTunes Search API, with the synth as fallback.
 3. **Backend and auth.** Add a database and sign-in (for example Supabase: Postgres plus email magic-link or Sign in with Apple) so a streak syncs across devices. Keep the no-account local mode as the default, and offer to import local history on first sign-in.
 4. **Payments.** A small paid tier (ideas: extra music styles, streak freezes, custom party themes) through Stripe on the web. Apps sold through the App Store must use Apple's in-app purchase for digital goods, so this rung also decides how web and iOS purchases map to one account.
-5. **App Store.** Wrap the web app in a native shell with Capacitor, since Apple rejects thin website wrappers, then add native touches (haptics, a daily reminder notification). Needs an Apple Developer account ($99/year), Xcode on a Mac, a privacy policy page, screenshots, and review. Google Play via a Trusted Web Activity is the cheaper sibling ($25 one-time).
+5. **App Store** (started: Xcode project, icon and privacy page are in; see [native/README.md](native/README.md)). Wrap the web app in a native shell with Capacitor, since Apple rejects thin website wrappers, then add native touches (haptics, a daily reminder notification). Needs an Apple Developer account ($99/year), Xcode on a Mac, a privacy policy page, screenshots, and review. Google Play via a Trusted Web Activity is the cheaper sibling ($25 one-time).
 
 ### Ideas on the shelf
 
