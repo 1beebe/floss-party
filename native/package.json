@@ -1,0 +1,15 @@
+{
+  "name": "floss-party-native",
+  "private": true,
+  "description": "Capacitor shell that wraps the Floss Party web app for the App Store",
+  "scripts": {
+    "copy-web": "node copy-web.mjs",
+    "sync": "npm run copy-web && npx cap sync",
+    "ios": "npm run sync && npx cap open ios"
+  },
+  "dependencies": {
+    "@capacitor/cli": "^8.5.3",
+    "@capacitor/core": "^8.5.3",
+    "@capacitor/ios": "^8.5.3"
+  }
+}
