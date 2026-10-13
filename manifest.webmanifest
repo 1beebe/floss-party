@@ -1,0 +1,13 @@
+{
+  "name": "Floss Party",
+  "short_name": "Floss Party",
+  "description": "A daily floss tracker that throws you a disco party every time you floss.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#EAF9F2",
+  "theme_color": "#0FB488",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
