@@ -1,0 +1,11 @@
+# Files in the repo that should not be published to floss.lbeebe.com
+.git
+.github
+.gitignore
+.assetsignore
+.wrangler
+node_modules
+native
+wrangler.jsonc
+DEPLOY.md
+README.md
