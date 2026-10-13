@@ -1,6 +1,6 @@
 # Floss Party 🦷🪩
 
-A daily floss tracker that throws you a disco party every time you floss. Tap the big button and you get a perspective light floor, sweeping spotlight beams, confetti, and a synth-funk groove that is improvised fresh with the Web Audio API on every tap. A multicolor "look back" calendar shows your streak, and you can tap any past day to fix a mistake.
+A daily floss tracker that throws you a disco party every time you floss. Tap the big button and you get a perspective light floor, sweeping spotlight beams, confetti, and a synth-funk groove that is improvised fresh with the Web Audio API on every tap. About six parties in ten, one of the Floss Tooth animations dances above the FLOSSED! banner; the rest are just the disco floor, so you never know which you'll get. The first party always brings out a tooth, and the same one never plays twice in a row (`TOOTH_CHANCE` and `DANCES` in `index.html`). Each animation page also plays inside the party when opened with `?embed`. A multicolor "look back" calendar shows your streak, and you can tap any past day to fix a mistake.
 
 This repo is where Floss Party grows from a single-file toy into a full app. The goal is to learn, end to end, how to ship a real product: front end, back end, auth, payments, and an App Store listing, all served from **floss.lbeebe.com**.
 
@@ -15,7 +15,7 @@ Plain HTML, CSS and JavaScript with no build step and no dependencies.
 | `sw.js` | Service worker that caches the app so it opens offline |
 | `icon.svg` | App icon |
 | `demo.html` | Preview build seeded with two months of sample history, for showing off the look (nothing saves) |
-| `animations/` | The Floss Tooth character animations: **Floss Lasso**, **Floss Hoop** and **Floss Limbo**, plus an index page |
+| `animations/` | The seven Floss Tooth animations (**Lasso**, **Hoop**, **Limbo**, **Jump Rope**, **Swing**, **Whip** and **Web**), an index page, and `tooth-kit.js`, the shared on-model tooth the newer four are built from |
 | `design/model-sheet/` | The Floss Tooth model sheet: turnaround, character rules, expressions, limbo pose study and palette |
 
 Your streak is stored in your own browser (`localStorage`), so every visitor gets a private tracker and nobody sees anyone else's days. The flip side is that clearing browser data erases your streak, and it does not follow you between devices. Rung 3 fixes that.
@@ -41,7 +41,6 @@ Each rung is shippable on its own, and each one teaches one layer of the stack.
 
 ### Ideas on the shelf
 
-- Bring the Floss Tooth animations into the party itself (a random lasso, hoop or limbo on each tap), following the model sheet.
 - Longest-streak starburst celebration.
 - Export-my-streak backup button.
 - More music styles to shuffle between (lo-fi, house, chiptune).

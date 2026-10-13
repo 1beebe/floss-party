@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Floss Limbo</title>
+<script>if (/[?&]embed\b/.test(location.search)) document.documentElement.classList.add("embed");</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Figtree:wght@500;700&display=swap">
@@ -55,6 +56,13 @@
   }
   button:active { transform: translate(2px, 2px); box-shadow: none; }
   button:focus-visible { outline: 3px solid var(--floss); outline-offset: 2px; }
+  /* ?embed: drawn inside the app's party, so no page chrome or background */
+  html.embed, html.embed body { background: transparent; }
+  html.embed body { padding: 0; display: block; overflow: hidden; }
+  html.embed .wrap { max-width: none; }
+  html.embed .bar { display: none; }
+  html.embed .floor { display: none; }
+  html.embed .shade { fill: #000; opacity: .22; }
 </style>
 </head>
 <body>
@@ -76,10 +84,10 @@
 
     <g id="scene" transform="translate(-30 76) scale(0.8)">
       <!-- dance floor, seen from a low camera -->
-      <ellipse cx="290" cy="318" rx="500" ry="66" fill="#F09A18"/>
+      <ellipse class="floor" cx="290" cy="318" rx="500" ry="66" fill="#F09A18"/>
 
       <!-- far toothbrush -->
-      <ellipse cx="440" cy="274" rx="22" ry="4" fill="#D98612"/>
+      <ellipse class="shade" cx="440" cy="274" rx="22" ry="4" fill="#D98612"/>
       <g transform="translate(440 272) scale(0.9)"><use href="#brush" style="fill:#1FA89A"/></g>
 
       <!-- far half of the floss -->
@@ -89,7 +97,7 @@
       </g>
       <circle id="knotBack" r="5" fill="#BFF2DC" stroke="#262A27" stroke-width="3"/>
 
-      <ellipse id="shadow" cx="202" cy="322" rx="86" ry="8" fill="#D98612"/>
+      <ellipse id="shadow" class="shade" cx="202" cy="322" rx="86" ry="8" fill="#D98612"/>
 
       <!-- the tooth, three-quarter view: crown on top, roots as bendable legs -->
       <g id="char" stroke-linecap="round" stroke-linejoin="round" fill="none">
@@ -128,7 +136,7 @@
       </g>
 
       <!-- near toothbrush -->
-      <ellipse cx="140" cy="366" rx="27" ry="5" fill="#D98612"/>
+      <ellipse class="shade" cx="140" cy="366" rx="27" ry="5" fill="#D98612"/>
       <g transform="translate(140 364) scale(1.1)"><use href="#brush" style="fill:#FF6F91"/></g>
       <circle id="knotFront" r="5.5" fill="#BFF2DC" stroke="#262A27" stroke-width="3"/>
 

@@ -236,6 +236,11 @@
     background:rgba(8,4,20,.62);backdrop-filter:blur(3px);overflow:hidden;cursor:pointer;
   }
   #party.on{display:grid}
+  /* Tooth dance: one of the Floss Tooth animations, drawn above FLOSSED! on some parties */
+  .party-tooth{width:min(64vw,300px);aspect-ratio:1/1;max-width:100%;margin:0 auto -4px}
+  .party-tooth[hidden]{display:none}
+  .party-tooth iframe{display:block;width:100%;height:100%;border:0;background:transparent;color-scheme:light;pointer-events:none;
+    filter:drop-shadow(0 10px 24px rgba(0,0,0,.35))}
   #floorCanvas{position:absolute;inset:0;width:100%;height:100%;display:block}
   #beams{position:absolute;left:50%;top:0;width:170vmax;height:170vmax;transform:translate(-50%,-34%);
     background:conic-gradient(from 0deg,
@@ -341,6 +346,7 @@
     <div id="beams"></div>
     <canvas id="confetti"></canvas>
     <div class="party-card">
+      <div class="party-tooth" id="partyTooth" hidden></div>
       <div class="boom">FLOSSED!</div>
       <div class="subboom" id="subboom">Your teeth are throwing confetti.</div>
       <div class="nowspin"><span class="disc"></span><span>Now spinning: <span id="trackName">Minty Groove</span></span></div>
@@ -590,6 +596,37 @@
     if(alive>0&&partyOn)confRAF=requestAnimationFrame(stepConfetti);else cctx.clearRect(0,0,confCv.width,confCv.height);
   }
   var partyOn=false,partyT=0,danceT=0;
+  /* ---- Tooth dances: random rewards ----
+     Some parties are just the disco floor; others bring out one of the Floss Tooth
+     animations (animations/*.html, shown with ?embed). The very first party always
+     gets a tooth, and the same tooth never plays twice in a row. */
+  var DANCES=[
+    {id:"lasso",secs:9},{id:"hoop",secs:8},{id:"limbo",secs:9.2},{id:"jumprope",secs:8},
+    {id:"swing",secs:8},{id:"whip",secs:9},{id:"web",secs:8}
+  ];
+  var TOOTH_CHANCE=0.6, LS_DANCE="flossparty.lastdance.v1", lastDance=null;
+  
+  function pickDance(){
+    var first = lastDance===null;
+    var choice = null;
+    if(first || Math.random()<TOOTH_CHANCE){
+      var pool = DANCES.filter(function(d){return d.id!==lastDance;});
+      choice = pool[(Math.random()*pool.length)|0];
+    }
+    lastDance = choice ? choice.id : "disco";
+    
+    return choice;
+  }
+  function showDance(d){
+    var box=document.getElementById("partyTooth");
+    box.innerHTML="";
+    if(!d){ box.hidden=true; return 0; }
+    var f=document.createElement("iframe");
+    f.src="animations/"+d.id+".html?embed"; f.title="Floss Tooth dance"; f.setAttribute("aria-hidden","true"); f.tabIndex=-1;
+    box.appendChild(f); box.hidden=false;
+    return d.secs*1000;
+  }
+  function hideDance(){ var box=document.getElementById("partyTooth"); box.innerHTML=""; box.hidden=true; }
   function throwParty(){
     var p=document.getElementById("party");
     document.getElementById("subboom").textContent=SUBS[(Math.random()*SUBS.length)|0];
@@ -599,13 +636,14 @@
     var bpm=104+((Math.random()*20)|0);
     clearTimeout(danceT);document.getElementById("grid").classList.add("dancing");
     startFloor(bpm);launchConfetti();
+    var danceMs=showDance(pickDance());
     var dur=8200;if(!muted){try{dur=playGroove(bpm);}catch(e){}}
-    clearTimeout(partyT);partyT=setTimeout(endParty,Math.max(dur+400,4200));
+    clearTimeout(partyT);partyT=setTimeout(endParty,Math.max(dur+400,danceMs+400,4200));
   }
   function endParty(){
     if(!partyOn)return;partyOn=false;
     var p=document.getElementById("party");p.classList.remove("on");p.setAttribute("aria-hidden","true");
-    stopFloor();stopMusic();cancelAnimationFrame(confRAF);cctx.clearRect(0,0,confCv.width,confCv.height);
+    stopFloor();stopMusic();hideDance();cancelAnimationFrame(confRAF);cctx.clearRect(0,0,confCv.width,confCv.height);
     clearTimeout(danceT);danceT=setTimeout(function(){document.getElementById("grid").classList.remove("dancing");},3600);
   }
   document.getElementById("party").addEventListener("click",endParty);

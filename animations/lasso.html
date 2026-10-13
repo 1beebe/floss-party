@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Floss Lasso</title>
+<script>if (/[?&]embed\b/.test(location.search)) document.documentElement.classList.add("embed");</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rye&family=Figtree:wght@500;700&display=swap">
@@ -80,6 +81,12 @@
   }
   button:active { transform: translate(2px, 2px); box-shadow: none; }
   button:focus-visible { outline: 3px solid var(--floss); outline-offset: 2px; }
+  /* ?embed: drawn inside the app's party, so no page chrome or background */
+  html.embed, html.embed body { background: transparent; }
+  html.embed body { padding: 0; display: block; overflow: hidden; }
+  html.embed .wrap { max-width: none; }
+  html.embed .bar { display: none; }
+  html.embed #shadow { fill: #000; opacity: .22; }
 </style>
 </head>
 <body>

@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Floss Web</title>
+<script>if (/[?&]embed\b/.test(location.search)) document.documentElement.classList.add("embed");</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bangers&family=Figtree:wght@500;700&display=swap">
+<style>
+  :root {
+    --bg: #2E3A6E;
+    --enamel: #FBF6EC;
+    --ink: #262A27;
+    --floss: #BFF2DC;
+  }
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Figtree", system-ui, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-inline: 16px;
+    padding-block: 24px;
+    box-sizing: border-box;
+  }
+  .wrap { width: 100%; max-width: 560px; display: flex; flex-direction: column; gap: 14px; }
+  svg.stage { width: 100%; max-width: 100%; aspect-ratio: 1 / 1; height: auto; display: block; overflow: visible; }
+  .bar { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  h1 {
+    font-family: "Bangers", system-ui, sans-serif;
+    font-weight: 400;
+    font-size: clamp(24px, 5.5vw, 34px);
+    margin: 0;
+    color: var(--enamel);
+    text-shadow: 2px 2px 0 var(--ink);
+    letter-spacing: .03em;
+  }
+  .meta { font-size: 13px; color: var(--enamel); opacity: .8; margin: 4px 0 0; }
+  .controls { display: flex; gap: 8px; }
+  button {
+    font: 700 13px/1 "Figtree", system-ui, sans-serif;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--ink);
+    background: var(--enamel);
+    border: 3px solid var(--ink);
+    border-radius: 999px;
+    padding: 9px 14px;
+    cursor: pointer;
+    box-shadow: 2px 2px 0 var(--ink);
+  }
+  button:active { transform: translate(2px, 2px); box-shadow: none; }
+  button:focus-visible { outline: 3px solid var(--floss); outline-offset: 2px; }
+  /* ?embed: drawn inside the app's party, so no page chrome or background */
+  html.embed, html.embed body { background: transparent; }
+  html.embed body { padding: 0; display: block; overflow: hidden; }
+  html.embed .wrap { max-width: none; }
+  html.embed .bar { display: none; }
+  html.embed .scenery { display: none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <svg class="stage" id="stage" viewBox="-58 -60 520 520" role="img" aria-label="Night over the city. A cartoon tooth lowers itself upside down on a strand of mint floss, flips onto a rooftop, shoots a floss web to swing off to the right, swings back in from the left on another web, lands in a hero pose with a fist up, then zips straight up into the sky."></svg>
+  <div class="bar">
+    <div>
+      <h1>Floss Web</h1>
+      <p class="meta">Rooftops, a full moon and plenty of mint floss. 8-second loop.</p>
+    </div>
+    <div class="controls">
+      <button id="toggle" type="button">Pause</button>
+      <button id="restart" type="button">Replay</button>
+    </div>
+  </div>
+</div>
+<script src="tooth-kit.js"></script>
+<script>
+(() => {
+  const K = ToothKit, { seg, lerp, eIO, eIn, eOut, kf, bump, rad } = K;
+  const T = 8, CX = 202, CY = 199;
+  const A1 = [330, -40], A2 = [80, -40], A3 = [214, -60];
+  const deg = r => r * 180 / Math.PI;
+  const SPLAT = 'M-13 0 L13 0 M0 -13 L0 13 M-9 -9 L9 9 M-9 9 L9 -9';
+  const stage = document.getElementById('stage');
+  stage.innerHTML = `
+    <defs><path id="sparkle" d="${K.SPARKLE}"/></defs>
+    <g class="scenery">
+    <circle cx="378" cy="40" r="34" fill="#FFF1B8"/>
+    <g fill="#3A4782">
+      <rect x="-58" y="210" width="70" height="300"/><rect x="20" y="250" width="56" height="260"/>
+      <rect x="300" y="190" width="64" height="320"/><rect x="372" y="236" width="90" height="280"/>
+    </g>
+    <g fill="#FFD966">
+      <rect x="-36" y="232" width="9" height="12"/><rect x="-14" y="262" width="9" height="12"/><rect x="40" y="272" width="9" height="12"/>
+      <rect x="318" y="212" width="9" height="12"/><rect x="340" y="248" width="9" height="12"/><rect x="398" y="258" width="9" height="12"/><rect x="428" y="290" width="9" height="12"/>
+    </g>
+    <path d="M-80 330 L480 330 L480 520 L-80 520 Z" fill="#232C55" stroke="${K.INK}" stroke-width="6"/>
+    </g>
+    <ellipse id="shadow" cx="202" cy="332" rx="86" ry="9" fill="#000" opacity=".22"/>
+    ${K.strand('web')}
+    ${K.strand('splat', 'stroke-width="1"')}
+    ${K.tooth()}
+    <g fill="${K.ENAMEL}" stroke="${K.INK}" stroke-width="2.2">
+      <use href="#sparkle" id="fx1"/><use href="#sparkle" id="fx2"/><use href="#sparkle" id="fx3"/>
+    </g>`;
+  const $ = id => stage.querySelector('#' + id);
+  const tooth = K.rig(stage);
+  const shadow = $('shadow'), web = $('web'), splat = $('splat');
+  const fx = ['fx1', 'fx2', 'fx3'].map($);
+  K.setD(splat, SPLAT);
+
+  // Where the tooth's middle is, and its tilt, from a rope of length len at angle a (0 = straight down).
+  const swingAt = (A, len, a) => [A[0] + len * Math.sin(rad(a)), A[1] + len * Math.cos(rad(a))];
+
+  function render(t) {
+    t = ((t % T) + T) % T;
+    let c = [CX, CY], rot = 0, anchor = null, reach = 1, useLeft = false, sq = 0, bobble = 0;
+
+    if (t < 1.4) {                                   // dangling upside down from a strand
+      const y = kf(t, [[0, -300], [0.7, 82], [0.85, 70], [1.4, 74]], eOut);
+      c = [CX + 6 * Math.sin(t * 4), y + 4 * Math.sin(t * 7)]; rot = 180 + 5 * Math.sin(t * 4);
+    } else if (t < 2.05) {                           // lets go, flips, lands
+      const p = seg(t, 1.4, 1.95);
+      c = [CX, lerp(74, CY, eIn(p)) - 60 * Math.sin(Math.PI * p)]; rot = 180 + 180 * eIO(p);
+      sq = .12 * bump(t, 1.95, 2.15);
+    } else if (t < 2.35) {                           // shoots a web to the top right
+      anchor = A1; reach = eOut(seg(t, 2.05, 2.25)); sq = .07 * bump(t, 2.2, 2.35);
+    } else if (t < 3.5) {                            // swings off to the right
+      const p = eIO(seg(t, 2.35, 3.3));
+      const len = kf(t, [[2.35, 271], [2.8, 225], [3.5, 225]]), a = lerp(-28, 74, p);
+      c = swingAt(A1, len, a); rot = a * .55; anchor = t < 3.3 ? A1 : null;
+      if (t >= 3.3) c = [c[0] + 600 * (t - 3.3), c[1] - 300 * (t - 3.3)];
+    } else if (t < 4.5) {                            // swings back in from the left
+      const p = eIO(seg(t, 3.55, 4.5));
+      const a = lerp(-78, 28, p);
+      c = swingAt(A2, 240, a); rot = a * .55; anchor = A2; useLeft = true;
+    } else if (t < 5.05) {                           // lets go, flips, lands in the middle
+      const p = seg(t, 4.5, 5.0), from = swingAt(A2, 240, 28);
+      c = [lerp(from[0], CX, p), lerp(from[1], CY, eIn(p)) - 70 * Math.sin(Math.PI * p)];
+      rot = 15 * (1 - p) + 360 * eIO(p);
+    } else if (t < 6.75) {                           // hero landing
+      sq = .14 * bump(t, 5.0, 5.3) + .05 * bump(t, 5.3, 5.5);
+    } else if (t < 7.05) {                           // web straight up
+      anchor = A3; reach = eOut(seg(t, 6.75, 6.95)); sq = .08 * bump(t, 6.85, 7.05);
+    } else {                                         // zips up and away
+      const p = eIn(seg(t, 7.05, 7.6));
+      c = [CX, lerp(CY, -320, p)]; anchor = A3;
+    }
+    tooth.place({ x: c[0] - CX, y: c[1] - CY, rot, sx: 1 + sq * .7, sy: 1 - sq });
+
+    // ---- arms ----
+    let aL = 40 + 6 * Math.sin(t * 9), aR = 40 - 6 * Math.sin(t * 9);
+    if (t < 1.4) { aL = -45 + 12 * Math.sin(t * 6); aR = -45 - 12 * Math.sin(t * 6); }      // dangling toward the ground
+    if (t >= 1.4 && t < 2.05) { aL = aR = -40; }
+    if (anchor) {
+      const sh = tooth.toWorld(useLeft ? K.SHOULDER_L : K.SHOULDER_R);
+      const w = deg(Math.atan2(anchor[1] - sh[1], anchor[0] - sh[0])) - rot;
+      if (useLeft) { aL = 180 - w; aR = 30 + 8 * Math.sin(t * 8); } else { aR = w; aL = 10 + 8 * Math.sin(t * 8); }
+    }
+    if (t >= 5.3 && t < 6.6) { aR = -52 + 8 * Math.sin(t * 12); aL = 30; }                // fist up
+    const hand = tooth.arms(aL, aR);
+
+    // ---- web line and splat ----
+    let showWeb = false, d = '';
+    if (t < 1.4) {
+      const feet = tooth.toWorld([202, 300]);
+      d = `M${CX + 6 * Math.sin(t * 4)} -80 L${feet[0]} ${feet[1]}`; showWeb = true;
+    } else if (t < 1.55) {
+      const p = seg(t, 1.4, 1.55), y = lerp(150, -80, p);
+      d = `M${CX} -80 L${CX} ${y}`; showWeb = true;
+    } else if (anchor) {
+      const h = useLeft ? hand.L : hand.R;
+      d = `M${h[0]} ${h[1]} L${lerp(h[0], anchor[0], reach)} ${lerp(h[1], anchor[1], reach)}`; showWeb = true;
+    }
+    web.setAttribute('visibility', showWeb ? 'visible' : 'hidden');
+    if (showWeb) K.setD(web, d);
+    const splatOn = anchor && reach >= 1 && t < 7.4;
+    splat.setAttribute('visibility', splatOn ? 'visible' : 'hidden');
+    if (splatOn) splat.setAttribute('transform', `translate(${anchor[0]} ${anchor[1]}) scale(${Math.min(1, .6 + .4 * reach)})`);
+
+    // ---- shadow on the roof ----
+    const height = Math.max(0, CY - c[1]);
+    const near = Math.abs(c[0] - CX) < 200 && t > 1.0 ? 1 : 0;
+    shadow.setAttribute('cx', c[0]); shadow.setAttribute('rx', 86 * Math.max(.3, 1 - height / 300));
+    shadow.setAttribute('opacity', .22 * near * Math.max(0, 1 - height / 300));
+
+    // ---- face ----
+    const at = (a, b) => t >= a && t < b ? 1 : 0;
+    const gasp = at(1.4, 2.0) + at(4.5, 5.0), aim = at(2.0, 2.35) + at(6.7, 7.05);
+    const whee = at(2.35, 4.5) + at(5.0, 5.9) + at(7.05, 8);
+    let blink = 0;
+    for (const b of [0.95, 6.2]) blink = Math.max(blink, bump(t, b, b + .14));
+    tooth.face({
+      ey: -3 * aim, blink, big: gasp, o: gasp, focus: aim, flat: aim, arcs: whee, open: whee,
+      smile: 1 - gasp - aim - whee, blush: Math.max(whee, .6 * at(0, 1.4), .6 * at(5.9, 6.7))
+    });
+
+    // ---- sparkles ----
+    K.sparkle(fx[0], 96, 150, seg(t, 5.1, 5.7));
+    K.sparkle(fx[1], 318, 132, seg(t, 5.3, 5.9), 25, 1.5);
+    const s3 = seg(t, 2.22, 2.6);
+    K.sparkle(fx[2], s3 > 0 && s3 < 1 ? A1[0] + 22 : A3[0] + 22, s3 > 0 && s3 < 1 ? A1[1] + 26 : A3[1] + 40, s3 > 0 && s3 < 1 ? s3 : seg(t, 6.9, 7.3), 10, 1.3);
+  }
+
+  K.play({ T, rest: 5.6, render });
+})();
+</script>
+</body>
+</html>
