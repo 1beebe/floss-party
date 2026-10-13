@@ -8,7 +8,7 @@ import { cpSync, rmSync, mkdirSync, existsSync, readFileSync, writeFileSync } fr
 
 const root = new URL("../", import.meta.url);
 const www = new URL("./www/", import.meta.url);
-const files = ["index.html", "manifest.webmanifest", "icon.svg", "animations"];
+const files = ["index.html", "privacy.html", "manifest.webmanifest", "icon.svg", "animations"];
 
 rmSync(www, { recursive: true, force: true });
 mkdirSync(www);
