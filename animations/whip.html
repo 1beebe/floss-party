@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Floss Whip</title>
+<script>if (/[?&]embed\b/.test(location.search)) document.documentElement.classList.add("embed");</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rye&family=Figtree:wght@500;700&display=swap">
+<style>
+  :root {
+    --bg: #8DB255;
+    --enamel: #FBF6EC;
+    --ink: #262A27;
+    --floss: #BFF2DC;
+  }
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Figtree", system-ui, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-inline: 16px;
+    padding-block: 24px;
+    box-sizing: border-box;
+  }
+  .wrap { width: 100%; max-width: 560px; display: flex; flex-direction: column; gap: 14px; }
+  svg.stage { width: 100%; max-width: 100%; aspect-ratio: 1 / 1; height: auto; display: block; overflow: visible; }
+  .bar { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  h1 {
+    font-family: "Rye", system-ui, sans-serif;
+    font-weight: 400;
+    font-size: clamp(24px, 5.5vw, 34px);
+    margin: 0;
+    color: var(--enamel);
+    text-shadow: 2px 2px 0 var(--ink);
+    letter-spacing: .03em;
+  }
+  .meta { font-size: 13px; color: var(--ink); opacity: .8; margin: 4px 0 0; }
+  .controls { display: flex; gap: 8px; }
+  button {
+    font: 700 13px/1 "Figtree", system-ui, sans-serif;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--ink);
+    background: var(--enamel);
+    border: 3px solid var(--ink);
+    border-radius: 999px;
+    padding: 9px 14px;
+    cursor: pointer;
+    box-shadow: 2px 2px 0 var(--ink);
+  }
+  button:active { transform: translate(2px, 2px); box-shadow: none; }
+  button:focus-visible { outline: 3px solid var(--floss); outline-offset: 2px; }
+  /* ?embed: drawn inside the app's party, so no page chrome or background */
+  html.embed, html.embed body { background: transparent; }
+  html.embed body { padding: 0; display: block; overflow: hidden; }
+  html.embed .wrap { max-width: none; }
+  html.embed .bar { display: none; }
+  html.embed .scenery { display: none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <svg class="stage" id="stage" viewBox="-40 -40 520 520" role="img" aria-label="A cartoon tooth in an explorer's fedora spots a golden candy on a stone pedestal. It cracks a strand of mint floss like a whip once in the air, then again to snag the candy, yanks it over and holds it up in triumph, sets it back on the pedestal, and tips its hat."></svg>
+  <div class="bar">
+    <div>
+      <h1>Floss Whip</h1>
+      <p class="meta">Fedora on, one golden candy liberated and politely returned. 9-second loop.</p>
+    </div>
+    <div class="controls">
+      <button id="toggle" type="button">Pause</button>
+      <button id="restart" type="button">Replay</button>
+    </div>
+  </div>
+</div>
+<script src="tooth-kit.js"></script>
+<script>
+(() => {
+  const K = ToothKit, { seg, lerp, eIO, eIn, eOut, kf, bump, rad } = K;
+  const T = 9, N = 18, LINK = 13, LAG = .022, GROUND = 332;
+  const IDOL = [432, 244];
+  const fedora = `
+    <g transform="translate(202 92) rotate(-5)" stroke="${K.INK}" stroke-width="6" stroke-linejoin="round">
+      <path fill="#9A6B3F" d="M-44 0 C-47 -26 -40 -50 -24 -56 C-12 -60 -6 -50 0 -50 C6 -50 12 -60 24 -56 C40 -50 47 -26 44 0 Z"/>
+      <path fill="none" stroke-width="4" stroke-linecap="round" d="M-7 -49 Q0 -36 7 -49"/>
+      <path fill="#4A3322" stroke-width="3" d="M-45 -3 L45 -3 L44 -16 C20 -12 -20 -12 -44 -16 Z"/>
+      <path fill="#9A6B3F" d="M-86 -4 C-62 8 62 8 86 -4 C84 9 52 19 0 19 C-52 19 -84 9 -86 -4 Z"/>
+    </g>`;
+  const stage = document.getElementById('stage');
+  stage.innerHTML = `
+    <defs><path id="sparkle" d="${K.SPARKLE}"/></defs>
+    <ellipse id="shadow" cx="202" cy="330" rx="86" ry="10" fill="#000" opacity=".16"/>
+    <g stroke="${K.INK}" stroke-width="6" stroke-linejoin="round">
+      <ellipse cx="432" cy="332" rx="40" ry="8" fill="#000" opacity=".16" stroke="none"/>
+      <path fill="#C8B48C" d="M406 262 L458 262 L452 330 L412 330 Z"/>
+      <path fill="#B09A70" d="M398 250 L466 250 L466 266 L398 266 Z"/>
+      <path fill="none" stroke-width="3" d="M418 284 L446 284 M422 304 L442 304"/>
+    </g>
+    ${K.tooth(fedora)}
+    ${K.strand('whip')}
+    <g id="idol" stroke="${K.INK}" stroke-width="4" stroke-linejoin="round">
+      <g fill="#FFD23F">
+        <path d="M-15 0 L-31 -12 L-29 12 Z"/><path d="M15 0 L31 -12 L29 12 Z"/>
+        <circle r="17" stroke-width="5"/>
+      </g>
+      <path d="M-9 -8 L-3 -8 M6 6 L10 6" stroke="#FFF6C8" stroke-width="3.5" stroke-linecap="round"/>
+    </g>
+    <g fill="${K.ENAMEL}" stroke="${K.INK}" stroke-width="2.2">
+      <use href="#sparkle" id="fx1"/><use href="#sparkle" id="fx2"/><use href="#sparkle" id="fx3"/><use href="#sparkle" id="fx4"/>
+    </g>`;
+  const $ = id => stage.querySelector('#' + id);
+  const tooth = K.rig(stage);
+  const shadow = $('shadow'), whip = $('whip'), idol = $('idol'), hat = $('hat');
+  const fx = ['fx1', 'fx2', 'fx3', 'fx4'].map($);
+
+  // Direction the whip leaves the hand (degrees: 0 right, 90 down, -90 up). Each link follows a beat later.
+  const AIM = [[0, 80], [1.8, 80], [2.2, -140], [2.3, -150], [2.42, -30], [2.75, -25], [3.15, 60], [3.5, 80],
+    [3.75, -140], [3.9, -150], [4.02, 14], [5.0, 14], [5.2, 95], [6.9, 95], [7.4, 80], [9, 80]];
+  const aim = t => kf(((t % T) + T) % T, AIM);
+
+  // Link by link from the hand; once a link reaches the floor it lies along it.
+  function chain(t, hand) {
+    const pts = [hand.slice()];
+    let [x, y] = hand;
+    for (let i = 1; i <= N; i++) {
+      const a = rad(aim(t - i * LAG));
+      const nx = x + LINK * Math.cos(a), ny = y + LINK * Math.sin(a);
+      if (ny > GROUND) { y = GROUND; x += LINK * (Math.cos(a) >= 0 ? 1 : -1) * .95; }
+      else { x = nx; y = ny; }
+      pts.push([x, y]);
+    }
+    return pts;
+  }
+  // Whip snagged on the idol: a slack line to it, then a coil around it.
+  function wrapped(hand, at) {
+    const pts = [], half = 10;
+    for (let i = 0; i <= half; i++) {
+      const p = i / half, q = 1 - p;
+      const mx = (hand[0] + at[0]) / 2, my = (hand[1] + at[1]) / 2 + 14;
+      pts.push([q * q * hand[0] + 2 * q * p * mx + p * p * at[0], q * q * hand[1] + 2 * q * p * my + p * p * at[1]]);
+    }
+    for (let i = 1; i <= N - half; i++) {
+      const a = Math.PI + i / (N - half) * Math.PI * 2.1;
+      pts.push([at[0] + 24 * Math.cos(a), at[1] + 13 * Math.sin(a) + i * .6]);
+    }
+    return pts;
+  }
+  function smooth(pts) {
+    let d = `M${pts[0][0]} ${pts[0][1]}`;
+    for (let i = 1; i < pts.length - 1; i++) {
+      const mx = (pts[i][0] + pts[i + 1][0]) / 2, my = (pts[i][1] + pts[i + 1][1]) / 2;
+      d += ` Q${pts[i][0]} ${pts[i][1]} ${mx} ${my}`;
+    }
+    const e = pts[pts.length - 1];
+    return d + ` L${e[0]} ${e[1]}`;
+  }
+
+  function render(t) {
+    t = ((t % T) + T) % T;
+
+    // ---- body ----
+    const bob = -26 * bump(t, 5.05, 5.4);
+    const sq = .07 * bump(t, 2.38, 2.6) + .07 * bump(t, 3.98, 4.2) + .08 * bump(t, 5.4, 5.6) + .04 * bump(t, 7.3, 7.5);
+    tooth.place({ y: bob, sx: 1 + sq * .7, sy: 1 - sq, rot: kf(t, [[0, 0], [2.1, -4], [2.42, 3], [2.9, 0], [3.8, -4], [4.02, 3], [4.6, 0]]) });
+    shadow.setAttribute('rx', 86 * (1 + bob / 140));
+
+    // ---- arms ----
+    const aR = kf(t, [[0, 40], [1.8, 40], [2.15, -85], [2.3, -85], [2.42, -20], [2.9, 20], [3.5, 20], [3.75, -80], [3.9, -80],
+      [4.02, 15], [4.6, 15], [4.75, -30], [5.05, -75], [6.5, -75], [6.75, -40], [7.0, 10], [7.3, 40], [9, 40]]);
+    const aL = kf(t, [[0, 40], [5.05, 40], [5.2, -55], [6.4, -55], [6.6, 40], [7.55, 40], [7.75, -82], [8.05, -82], [8.3, 40], [9, 40]])
+      + (t > 5.2 && t < 6.4 ? 10 * Math.sin(t * 16) : 0);
+    const hand = tooth.arms(aL, aR);
+
+    // ---- the idol: snatched off its pedestal, held up, then politely returned ----
+    let ix = IDOL[0], iy = IDOL[1], ir = 0;
+    const held = [hand.R[0] + 20, hand.R[1] - 30];
+    if (t >= 4.75 && t < 5.1) {
+      const p = eIO(seg(t, 4.75, 5.1)), q = 1 - p;
+      ix = q * q * IDOL[0] + 2 * q * p * 400 + p * p * held[0];
+      iy = q * q * IDOL[1] + 2 * q * p * 90 + p * p * held[1];
+      ir = -360 * p;
+    } else if (t >= 5.1 && t < 6.75) {
+      [ix, iy] = held; ir = 6 * Math.sin(t * 10);
+    } else if (t >= 6.75 && t < 7.35) {
+      const p = seg(t, 6.75, 7.35);
+      ix = lerp(held[0], IDOL[0], p); iy = lerp(held[1], IDOL[1], p) - 150 * 4 * p * (1 - p); ir = 360 * p;
+    } else if (t >= 4.3 && t < 4.75) {
+      ir = 8 * Math.sin(t * 40) * (1 - seg(t, 4.5, 4.75));
+    }
+    const land = t > 7.35 && t < 7.8 ? .14 * Math.exp(-(t - 7.35) * 9) : 0;
+    idol.setAttribute('transform', `translate(${ix} ${iy + land * 40}) rotate(${ir}) scale(${1 + land} ${1 - land})`);
+
+    // ---- the whip ----
+    let pts = chain(t, hand.R);
+    const snag = seg(t, 4.15, 4.4) * (1 - seg(t, 5.05, 5.25));
+    if (snag > 0) {
+      const w = wrapped(hand.R, [ix, iy]);
+      pts = pts.map((p, i) => [lerp(p[0], w[i][0], eIO(snag)), lerp(p[1], w[i][1], eIO(snag))]);
+    }
+    K.setD(whip, smooth(pts));
+    const tip = pts[pts.length - 1];
+
+    // ---- fedora tip ----
+    const tipHat = bump(t, 7.7, 8.25);
+    hat.setAttribute('transform', `translate(${-8 * tipHat} ${-14 * tipHat}) rotate(${-14 * tipHat} 202 92)`);
+
+    // ---- face ----
+    const at = (a, b) => t >= a && t < b ? 1 : 0;
+    const spot = at(1.0, 1.7), aimF = at(1.7, 2.45) + at(3.4, 4.6), proud = at(2.45, 3.4), gasp = at(4.6, 5.1);
+    const joy = at(5.1, 6.55), watch = at(6.55, 7.5);
+    let blink = 0;
+    for (const b of [0.5, 3.0, 8.5]) blink = Math.max(blink, bump(t, b, b + .14));
+    tooth.face({
+      ex: 5 * (spot + aimF + watch) + 2 * gasp, ey: -2 * aimF + 2 * watch,
+      blink, big: spot + gasp, o: spot + gasp, focus: aimF, flat: aimF, arcs: joy, open: joy,
+      smile: 1 - spot - aimF - gasp - joy,
+      blush: Math.max(joy, proud * .6, .6 * seg(t, 7.6, 7.9) * (1 - seg(t, 8.6, 8.95)))
+    });
+
+    // ---- sparkles: a crack in the air, a crack on the idol, then the payoff ----
+    const c1 = seg(t, 2.62, 2.95), c2 = seg(t, 4.25, 4.6);
+    K.sparkle(fx[0], c2 > 0 && c2 < 1 ? IDOL[0] + 30 : tip[0], c2 > 0 && c2 < 1 ? IDOL[1] - 24 : tip[1], c2 > 0 && c2 < 1 ? c2 : c1, 15, 2.2);
+    K.sparkle(fx[1], c2 > 0 && c2 < 1 ? IDOL[0] - 26 : tip[0] + 22, c2 > 0 && c2 < 1 ? IDOL[1] - 10 : tip[1] + 14, c2 > 0 && c2 < 1 ? seg(t, 4.3, 4.65) : seg(t, 2.67, 3.0), 40, 1.3);
+    K.sparkle(fx[2], 120, 92, seg(t, 5.15, 5.75));
+    K.sparkle(fx[3], 352, 110, seg(t, 5.35, 5.95), 25, 1.5);
+  }
+
+  K.play({ T, rest: 5.6, render });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Floss Swing</title>
+<script>if (/[?&]embed\b/.test(location.search)) document.documentElement.classList.add("embed");</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Figtree:wght@500;700&display=swap">
+<style>
+  :root {
+    --bg: #9C82E8;
+    --enamel: #FBF6EC;
+    --ink: #262A27;
+    --floss: #BFF2DC;
+  }
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Figtree", system-ui, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-inline: 16px;
+    padding-block: 24px;
+    box-sizing: border-box;
+  }
+  .wrap { width: 100%; max-width: 560px; display: flex; flex-direction: column; gap: 14px; }
+  svg.stage { width: 100%; max-width: 100%; aspect-ratio: 1 / 1; height: auto; display: block; overflow: visible; }
+  .bar { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  h1 {
+    font-family: "Lilita One", system-ui, sans-serif;
+    font-weight: 400;
+    font-size: clamp(24px, 5.5vw, 34px);
+    margin: 0;
+    color: var(--enamel);
+    text-shadow: 2px 2px 0 var(--ink);
+    letter-spacing: .03em;
+  }
+  .meta { font-size: 13px; color: var(--ink); opacity: .8; margin: 4px 0 0; }
+  .controls { display: flex; gap: 8px; }
+  button {
+    font: 700 13px/1 "Figtree", system-ui, sans-serif;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--ink);
+    background: var(--enamel);
+    border: 3px solid var(--ink);
+    border-radius: 999px;
+    padding: 9px 14px;
+    cursor: pointer;
+    box-shadow: 2px 2px 0 var(--ink);
+  }
+  button:active { transform: translate(2px, 2px); box-shadow: none; }
+  button:focus-visible { outline: 3px solid var(--floss); outline-offset: 2px; }
+  /* ?embed: drawn inside the app's party, so no page chrome or background */
+  html.embed, html.embed body { background: transparent; }
+  html.embed body { padding: 0; display: block; overflow: hidden; }
+  html.embed .wrap { max-width: none; }
+  html.embed .bar { display: none; }
+  html.embed .scenery { display: none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <svg class="stage" id="stage" viewBox="-58 -60 520 520" role="img" aria-label="A cartoon tooth sits on a loop of mint floss like a playground swing, holding the two strands. It pumps higher and higher toward us and away, grinning at the near end and gasping at the far end, then glides back to rest."></svg>
+  <div class="bar">
+    <div>
+      <h1>Floss Swing</h1>
+      <p class="meta">Two strands of mint floss and a seat for one. 8-second loop.</p>
+    </div>
+    <div class="controls">
+      <button id="toggle" type="button">Pause</button>
+      <button id="restart" type="button">Replay</button>
+    </div>
+  </div>
+</div>
+<script src="tooth-kit.js"></script>
+<script>
+(() => {
+  const K = ToothKit, { seg, kf, bump, TAU } = K;
+  const T = 8, PERIOD = 1.6, L = 575, PIVOT_Y = -275;
+  const SEAT = 262, ROPE_L = 82, ROPE_R = 322, TOP_Y = -90;
+  const stage = document.getElementById('stage');
+  stage.innerHTML = `
+    <defs><path id="sparkle" d="${K.SPARKLE}"/></defs>
+    <ellipse id="shadow" cx="202" cy="380" rx="80" ry="9" fill="#000" opacity=".16"/>
+    ${K.strand('seat')}
+    ${K.tooth()}
+    ${K.strand('ropeL')}
+    ${K.strand('ropeR')}
+    <g fill="${K.ENAMEL}" stroke="${K.INK}" stroke-width="2.2">
+      <use href="#sparkle" id="fx1"/><use href="#sparkle" id="fx2"/>
+    </g>`;
+  const $ = id => stage.querySelector('#' + id);
+  const tooth = K.rig(stage);
+  const shadow = $('shadow'), seat = $('seat'), ropeL = $('ropeL'), ropeR = $('ropeR');
+  const fx1 = $('fx1'), fx2 = $('fx2');
+
+  function render(t) {
+    t = ((t % T) + T) % T;
+    // The swing moves toward and away from us: higher at both ends, bigger and lower when near.
+    const amp = kf(t, [[0, .04], [1.0, .06], [3.0, .32], [5.2, .5], [6.6, .44], [7.6, .12], [8, .04]]);
+    const th = amp * Math.sin(TAU * t / PERIOD);
+    const z = Math.sin(th);
+    const s = 1 + .24 * z;
+    const seatY = PIVOT_Y + L * Math.cos(th) + 44 * z;
+    const speed = Math.cos(TAU * t / PERIOD) * amp / .5;           // 1 at the bottom of a big swing
+    const sq = .045 * speed * speed;
+    const x = 4 * Math.sin(TAU * t / PERIOD * .5) * seg(t, 1, 3);
+    tooth.place({ x, y: seatY - (318 - (318 - SEAT) * s), s, sx: 1 + sq * .6, sy: 1 - sq, rot: 3 * Math.sin(TAU * t / (PERIOD * 2)) });
+
+    // Hands grip the ropes at shoulder height.
+    const hand = tooth.arms(-29, -29);
+    const seatL = tooth.toWorld([ROPE_L, SEAT]), seatR = tooth.toWorld([ROPE_R, SEAT]);
+    K.setD(seat, `M${seatL[0]} ${seatL[1]} Q202 ${seatL[1] + 10 * s} ${seatR[0]} ${seatR[1]}`);
+    K.setD(ropeL, `M96 ${TOP_Y} L${hand.L[0]} ${hand.L[1]} L${seatL[0]} ${seatL[1]}`);
+    K.setD(ropeR, `M308 ${TOP_Y} L${hand.R[0]} ${hand.R[1]} L${seatR[0]} ${seatR[1]}`);
+
+    const lift = 300 - seatY;
+    shadow.setAttribute('rx', 80 * s * (1 - lift / 400));
+    shadow.setAttribute('opacity', .16 * (1 - lift / 200));
+
+    // ---- face: grins at the near end, gasps at the far end ----
+    const going = seg(t, 2.6, 2.8) * (1 - seg(t, 7.0, 7.2));
+    const near = going * (th > .26 ? 1 : 0), far = going * (th < -.26 ? 1 : 0);
+    let blink = 0;
+    for (const b of [0.7, 2.2, 7.5]) blink = Math.max(blink, bump(t, b, b + .14));
+    tooth.face({
+      ey: -3 * far + 2 * near,
+      blink: far || near ? 0 : blink,
+      big: far,
+      o: far,
+      arcs: near,
+      open: near,
+      smile: 1 - far - near,
+      blush: Math.max(near, .6 * seg(t, 1.2, 1.8) * (1 - seg(t, 7.3, 7.8)))
+    });
+
+    // Sparkles fly off at the near end of the biggest swings.
+    const k = Math.floor(t / PERIOD), peak = (k + .25) * PERIOD;
+    const p = seg(t, peak - .15, peak + .45), on = t > 3.5 && t < 7 ? 1 : 0;
+    K.sparkle(fx1, 70, 120 - 30 * p, p * on, 0, 1.6);
+    K.sparkle(fx2, 344, 96 - 30 * p, seg(t, peak - .05, peak + .55) * on, 30, 1.3);
+  }
+
+  K.play({ T, rest: 5.2, render });
+})();
+</script>
+</body>
+</html>

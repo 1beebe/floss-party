@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Floss Jump Rope</title>
+<script>if (/[?&]embed\b/.test(location.search)) document.documentElement.classList.add("embed");</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Figtree:wght@500;700&display=swap">
+<style>
+  :root {
+    --bg: #F27BA8;
+    --enamel: #FBF6EC;
+    --ink: #262A27;
+    --floss: #BFF2DC;
+  }
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Figtree", system-ui, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-inline: 16px;
+    padding-block: 24px;
+    box-sizing: border-box;
+  }
+  .wrap { width: 100%; max-width: 560px; display: flex; flex-direction: column; gap: 14px; }
+  svg.stage { width: 100%; max-width: 100%; aspect-ratio: 1 / 1; height: auto; display: block; overflow: visible; }
+  .bar { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  h1 {
+    font-family: "Lilita One", system-ui, sans-serif;
+    font-weight: 400;
+    font-size: clamp(24px, 5.5vw, 34px);
+    margin: 0;
+    color: var(--enamel);
+    text-shadow: 2px 2px 0 var(--ink);
+    letter-spacing: .03em;
+  }
+  .meta { font-size: 13px; color: var(--ink); opacity: .8; margin: 4px 0 0; }
+  .controls { display: flex; gap: 8px; }
+  button {
+    font: 700 13px/1 "Figtree", system-ui, sans-serif;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--ink);
+    background: var(--enamel);
+    border: 3px solid var(--ink);
+    border-radius: 999px;
+    padding: 9px 14px;
+    cursor: pointer;
+    box-shadow: 2px 2px 0 var(--ink);
+  }
+  button:active { transform: translate(2px, 2px); box-shadow: none; }
+  button:focus-visible { outline: 3px solid var(--floss); outline-offset: 2px; }
+  /* ?embed: drawn inside the app's party, so no page chrome or background */
+  html.embed, html.embed body { background: transparent; }
+  html.embed body { padding: 0; display: block; overflow: hidden; }
+  html.embed .wrap { max-width: none; }
+  html.embed .bar { display: none; }
+  html.embed .scenery { display: none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <svg class="stage" id="stage" viewBox="-58 -60 520 520" role="img" aria-label="A cartoon tooth holds a strand of mint floss in both arms and skips it like a jump rope, hopping each time it passes under its roots. It speeds up, gets focused and a little sweaty, then winds down, hops once more and throws its arms up."></svg>
+  <div class="bar">
+    <div>
+      <h1>Floss Jump Rope</h1>
+      <p class="meta">Ten skips of mint floss, double time in the middle. 8-second loop.</p>
+    </div>
+    <div class="controls">
+      <button id="toggle" type="button">Pause</button>
+      <button id="restart" type="button">Replay</button>
+    </div>
+  </div>
+</div>
+<script src="tooth-kit.js"></script>
+<script>
+(() => {
+  const K = ToothKit, { seg, lerp, eIn, eOut, kf, bump, TAU } = K;
+  const T = 8;
+  const stage = document.getElementById('stage');
+  stage.innerHTML = `
+    <defs><path id="sparkle" d="${K.SPARKLE}"/></defs>
+    <ellipse id="shadow" cx="202" cy="330" rx="86" ry="10" fill="#000" opacity=".18"/>
+    ${K.strand('ropeBack')}
+    ${K.tooth()}
+    ${K.strand('ropeFront')}
+    <g fill="${K.ENAMEL}" stroke="${K.INK}" stroke-width="2.2">
+      <use href="#sparkle" id="fx1"/><use href="#sparkle" id="fx2"/><use href="#sparkle" id="fx3"/>
+    </g>`;
+  const $ = id => stage.querySelector('#' + id);
+  const tooth = K.rig(stage);
+  const shadow = $('shadow'), ropeBack = $('ropeBack'), ropeFront = $('ropeFront');
+  const fx = [$('fx1'), $('fx2'), $('fx3')];
+
+  // Turns of the rope: a slow first swing, a steady rhythm, a speed-up, then a wind-down.
+  function revs(t) {
+    if (t < 1.0) return 0;
+    if (t < 1.75) return eIn(seg(t, 1.0, 1.75));
+    if (t < 3.5) return lerp(1, 4, seg(t, 1.75, 3.5));
+    if (t < 5.3) return lerp(4, 9, seg(t, 3.5, 5.3));
+    if (t < 6.1) return lerp(9, 10, eOut(seg(t, 5.3, 6.1)));
+    return 10;
+  }
+
+  function render(t) {
+    t = ((t % T) + T) % T;
+    const r = revs(t), phi = r * TAU, under = .5 + .5 * Math.cos(phi);   // under = 1 when the rope is at the feet
+    const swinging = seg(t, 1.35, 1.55) * (1 - seg(t, 6.0, 6.15));
+    const J = t > 3.5 && t < 5.3 ? 34 : 42;
+
+    // ---- hop and squash ----
+    let bob = -J * Math.pow(under, 3) * swinging;
+    bob += -46 * bump(t, 6.15, 6.6);                               // victory hop
+    let sq = .07 * Math.pow(1 - under, 6) * swinging;
+    sq += .09 * bump(t, 1.1, 1.45);                                // crouch before the first jump
+    sq += .1 * bump(t, 6.0, 6.2) + .08 * Math.exp(-Math.max(0, t - 6.6) * 7) * (t > 6.6 ? Math.cos((t - 6.6) * 20) : 0);
+    tooth.place({ y: bob, sx: 1 + sq * .7, sy: 1 - sq });
+    const sh = 1 + bob / 140;
+    shadow.setAttribute('rx', 86 * sh); shadow.setAttribute('opacity', .18 * sh);
+
+    // ---- arms: wrists turn the rope; arms go up at the end ----
+    const turn = 9 * Math.sin(phi) * swinging;
+    const up = kf(t, [[6.15, 0], [6.4, 1], [7.3, 1], [7.75, 0]]);
+    const aL = lerp(kf(t, [[0, 58], [1.0, 58], [1.4, 40], [6.0, 40], [6.2, 58], [8, 58]]) + turn, -58 + 10 * Math.sin(t * 14), up);
+    const aR = lerp(kf(t, [[0, 58], [1.0, 58], [1.4, 40], [6.0, 40], [6.2, 58], [8, 58]]) + turn, -58 - 10 * Math.sin(t * 14), up);
+    const hand = tooth.arms(aL, aR);
+
+    // ---- the rope: a curve between the hands whose middle circles the body ----
+    const midY = (hand.L[1] + hand.R[1]) / 2, c = Math.cos(phi);
+    const sy = c >= 0 ? lerp(midY, 342, c) : lerp(midY, 8 + bob, -c);
+    const sx = 202 + 6 * Math.sin(phi) * swinging;
+    const cx = 2 * sx - (hand.L[0] + hand.R[0]) / 2, cy = 2 * sy - midY;
+    const d = `M${hand.L[0]} ${hand.L[1]} Q${cx} ${cy} ${hand.R[0]} ${hand.R[1]}`;
+    const frac = ((r % 1) + 1) % 1, front = frac > .5;
+    K.setD(front ? ropeFront : ropeBack, d);
+    ropeFront.setAttribute('visibility', front ? 'visible' : 'hidden');
+    ropeBack.setAttribute('visibility', front ? 'hidden' : 'visible');
+
+    // ---- face ----
+    const fast = seg(t, 3.5, 3.7) * (1 - seg(t, 5.2, 5.5));
+    const joy = seg(t, 6.15, 6.35) * (1 - seg(t, 7.4, 7.8));
+    let blink = 0;
+    for (const b of [0.6, 2.6, 7.85]) blink = Math.max(blink, bump(t, b, b + .14));
+    tooth.face({
+      ey: kf(t, [[0, 0], [0.2, 4], [0.8, 4], [1.1, -3], [1.4, 0]]) + 2 * fast,
+      blink,
+      focus: fast,
+      flat: fast,
+      sweat: seg(t, 4.2, 4.4) * (1 - seg(t, 5.6, 5.9)),
+      arcs: joy,
+      open: joy,
+      smile: (1 - fast) * (1 - joy),
+      blush: Math.max(.9 * joy, .55 * (1 - fast) * seg(t, 1.8, 2.2) * (1 - seg(t, 7.6, 8)))
+    });
+
+    // ---- sparkles on the big finish ----
+    K.sparkle(fx[0], 112, 104, seg(t, 6.3, 6.9));
+    K.sparkle(fx[1], 300, 92, seg(t, 6.5, 7.1), 25);
+    K.sparkle(fx[2], 214, 30, seg(t, 6.75, 7.35), 10, 1.4);
+  }
+
+  K.play({ T, rest: 6.5, render });
+})();
+</script>
+</body>
+</html>
