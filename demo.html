@@ -541,6 +541,67 @@
     }
     return Math.round(bars*4*beat*1000);
   }
+  /* ---- Floss-o'-Lantern's own spooky-funk track (the one on animations/lantern.html):
+     120 bpm, one 10-second loop, started when the dance's frame loads so the kicks land on its beats ---- */
+  function playSpooky(frame){
+    var c=ctx(); if(!c) return 10000;
+    stopMusic();
+    var mst=c.createGain();mst.gain.value=0.55; musicBus=mst;
+    var comp=c.createDynamicsCompressor();mst.connect(comp);comp.connect(c.destination);
+    var buf=c.createBuffer(1,c.sampleRate*0.5,c.sampleRate),dat=buf.getChannelData(0);
+    for(var i=0;i<dat.length;i++)dat[i]=Math.random()*2-1;
+    function note(n){return 440*Math.pow(2,(n-69)/12);}
+    function voice(type,freq,at,dur,gain,glideTo){
+      var o=c.createOscillator(),g=c.createGain();o.type=type;o.frequency.setValueAtTime(freq,at);
+      if(glideTo)o.frequency.exponentialRampToValueAtTime(glideTo,at+dur);
+      g.gain.setValueAtTime(0.0001,at);g.gain.exponentialRampToValueAtTime(gain,at+0.01);
+      g.gain.exponentialRampToValueAtTime(0.0001,at+dur);
+      o.connect(g);g.connect(mst);o.start(at);o.stop(at+dur+0.05);
+      return o;
+    }
+    function hiss(at,dur,gain,hp){
+      var src=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();
+      src.buffer=buf;f.type="highpass";f.frequency.value=hp;
+      g.gain.setValueAtTime(gain,at);g.gain.exponentialRampToValueAtTime(0.0001,at+dur);
+      src.connect(f);f.connect(g);g.connect(mst);src.start(at);src.stop(at+dur+0.02);
+    }
+    function kick(at){voice("sine",150,at,0.22,0.9,42);}
+    function bass(n,at){
+      var o=c.createOscillator(),f=c.createBiquadFilter(),g=c.createGain();
+      o.type="sawtooth";o.frequency.value=note(n);
+      f.type="lowpass";f.frequency.setValueAtTime(900,at);f.frequency.exponentialRampToValueAtTime(220,at+0.2);f.Q.value=6;
+      g.gain.setValueAtTime(0.32,at);g.gain.exponentialRampToValueAtTime(0.0001,at+0.22);
+      o.connect(f);f.connect(g);g.connect(mst);o.start(at);o.stop(at+0.25);
+    }
+    function theremin(at){
+      var o=voice("sine",1046,at,1.1,0.22,262),lfo=c.createOscillator(),lg=c.createGain();
+      lfo.frequency.value=6.5;lg.gain.value=18;lfo.connect(lg);lg.connect(o.frequency);lfo.start(at);lfo.stop(at+1.15);
+    }
+    var ARP=[76,79,83,87,83,79], LINE=[40,40,43,40,45,46,47,50];
+    function step(s,at){              // s: eighth note in the loop, 0..39
+      var tl=s*0.25;
+      if(tl<3||tl>=7.5){ voice("triangle",note(ARP[s%ARP.length]),at,0.5,tl>=7.5?0.08:0.1); if(s===0||s===32)voice("sine",note(28),at,1.6,0.25); }
+      if(s===6){ theremin(at); voice("square",note(39),at,0.5,0.12,note(27)); }
+      if(tl>=3&&tl<7){
+        if(s%2===0)kick(at);
+        if(s%4===2)hiss(at,0.14,0.4,1400);
+        hiss(at+0.125,0.04,0.14,7000);
+        bass(LINE[(s-12)%8],at);
+      }
+      if(s===15||s===19||s===23)voice("square",note(64),at,0.2,0.1,note(88));
+      if(s===28){ [52,55,59,62,66].forEach(function(n){voice("square",note(n),at,0.6,0.06);}); kick(at); hiss(at,0.3,0.3,2500); }
+      if(s>=29&&s<=31)voice("sine",note([88,91,95][s-29]),at,0.4,0.12);
+    }
+    var started=false;
+    function go(){
+      if(started||musicBus!==mst) return; started=true;
+      var t0=c.currentTime+0.03;
+      for(var s=0;s<40;s++) step(s,t0+s*0.25);
+    }
+    if(frame){ frame.addEventListener("load",go); setTimeout(go,1500); } else go();
+    return 10000;
+  }
+
   /* ---- perspective disco floor (SNF-style, beat-synced) ---- */
   var floorCv=document.getElementById("floorCanvas"),fx=floorCv.getContext("2d");
   var floorRAF=0,floorStart=0,floorBPM=110,FW=0,FH=0;
@@ -602,7 +663,7 @@
      gets a tooth, and the same tooth never plays twice in a row. */
   var DANCES=[
     {id:"lasso",secs:9},{id:"hoop",secs:8},{id:"limbo",secs:9.2},{id:"jumprope",secs:8},
-    {id:"swing",secs:8},{id:"whip",secs:9},{id:"web",secs:8},{id:"lantern",secs:10}
+    {id:"swing",secs:8},{id:"whip",secs:9},{id:"web",secs:8},{id:"lantern",secs:10,song:"spooky"}
   ];
   var TOOTH_CHANCE=0.6, LS_DANCE="flossparty.lastdance.v1", lastDance=null;
   
@@ -617,13 +678,14 @@
     
     return choice;
   }
+  var danceFrame=null;
   function showDance(d){
-    var box=document.getElementById("partyTooth");
+    var box=document.getElementById("partyTooth"); danceFrame=null;
     box.innerHTML="";
     if(!d){ box.hidden=true; return 0; }
     var f=document.createElement("iframe");
     f.src="animations/"+d.id+".html?embed"; f.title="Floss Tooth dance"; f.setAttribute("aria-hidden","true"); f.tabIndex=-1;
-    box.appendChild(f); box.hidden=false;
+    box.appendChild(f); box.hidden=false; danceFrame=f;
     return d.secs*1000;
   }
   function hideDance(){ var box=document.getElementById("partyTooth"); box.innerHTML=""; box.hidden=true; }
@@ -633,11 +695,13 @@
     document.getElementById("trackName").textContent=trackName();
     var boom=p.querySelector(".boom");boom.style.animation="none";void boom.offsetWidth;boom.style.animation="";
     p.classList.add("on");p.setAttribute("aria-hidden","false");partyOn=true;
-    var bpm=104+((Math.random()*20)|0);
+    var dance=pickDance(),spooky=!!(dance&&dance.song==="spooky");   // Floss-o'-Lantern brings its own song
+    if(spooky)document.getElementById("trackName").textContent="Pumpkin Patch Funk";
+    var bpm=spooky?120:104+((Math.random()*20)|0);
     clearTimeout(danceT);document.getElementById("grid").classList.add("dancing");
     startFloor(bpm);launchConfetti();
-    var danceMs=showDance(pickDance());
-    var dur=8200;if(!muted){try{dur=playGroove(bpm);}catch(e){}}
+    var danceMs=showDance(dance);
+    var dur=8200;if(!muted){try{dur=spooky?playSpooky(danceFrame):playGroove(bpm);}catch(e){}}
     clearTimeout(partyT);partyT=setTimeout(endParty,Math.max(dur+400,danceMs+400,4200));
   }
   function endParty(){
