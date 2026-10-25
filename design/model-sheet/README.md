@@ -63,4 +63,4 @@ The face stays locked to the crown and tips with it. As the crown arches back, t
 | `#F7A7B8` | Blush | Cheeks, happy faces only |
 | `#BFF2DC` | Floss mint | Every floss prop, ink-outlined |
 
-One flat background per piece: Coral `#F26B50` (Floss Lasso), Cornflower `#4C86F0` (Floss Hoop), Marigold `#FFB22E` (Floss Limbo).
+One flat background per piece: Coral `#F26B50` (Floss Lasso), Cornflower `#4C86F0` (Floss Hoop), Marigold `#FFB22E` (Floss Limbo), Midnight plum `#4A2D6B` (Floss-o'-Lantern).
