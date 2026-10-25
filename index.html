@@ -754,10 +754,11 @@
     return Math.round(bars*4*beat*1000);
   }
 
-  /* ---- Floss-o'-Lantern's own spooky-funk track (the one on animations/lantern.html):
+  /* ---- Floss-o'-Lantern's own spooky-funk track (the one on animations/lantern.html), played for `loops` 10-second loops:
      120 bpm, one 10-second loop, started when the dance's frame loads so the kicks land on its beats ---- */
-  function playSpooky(frame){
-    var c=ctx(); if(!c) return 10000;
+  function playSpooky(frame,loops){
+    loops=loops||1;
+    var c=ctx(); if(!c) return 10000*loops;
     stopMusic();
     var mst=c.createGain();mst.gain.value=0.55; musicBus=mst;
     var comp=c.createDynamicsCompressor();mst.connect(comp);comp.connect(c.destination);
@@ -809,10 +810,10 @@
     function go(){
       if(started||musicBus!==mst) return; started=true;
       var t0=c.currentTime+0.03;
-      for(var s=0;s<40;s++) step(s,t0+s*0.25);
+      for(var s=0;s<40*loops;s++) step(s%40,t0+s*0.25);
     }
     if(frame){ frame.addEventListener("load",go); setTimeout(go,1500); } else go();
-    return 10000;
+    return 10000*loops+1000;
   }
 
   /* ---- perspective disco floor (Saturday-Night-Fever style, beat-synced) ---- */
@@ -929,7 +930,7 @@
      gets a tooth, and the same tooth never plays twice in a row. */
   var DANCES=[
     {id:"lasso",secs:9},{id:"hoop",secs:8},{id:"limbo",secs:9.2},{id:"jumprope",secs:8},
-    {id:"swing",secs:8},{id:"whip",secs:9},{id:"web",secs:8},{id:"lantern",secs:10,song:"spooky"}
+    {id:"swing",secs:8},{id:"whip",secs:9},{id:"web",secs:8},{id:"lantern",secs:21,song:"spooky",loops:2}
   ];
   var TOOTH_CHANCE=0.6, LS_DANCE="flossparty.lastdance.v1", lastDance=null;
   try{ lastDance = localStorage.getItem(LS_DANCE); }catch(e){}
@@ -969,7 +970,7 @@
     launchConfetti();
     var danceMs=showDance(dance);
     var dur=8200;
-    if(!muted){ try{dur=spooky?playSpooky(danceFrame):playGroove(bpm);}catch(e){} }
+    if(!muted){ try{dur=spooky?playSpooky(danceFrame,dance.loops):playGroove(bpm);}catch(e){} }
     clearTimeout(partyT); partyT=setTimeout(endParty, Math.max(dur+400,danceMs+400,4200));
   }
   function endParty(){

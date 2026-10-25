@@ -14,8 +14,10 @@
     --enamel: #FBF6EC;
     --ink: #262A27;
     --floss: #BFF2DC;
-    color-scheme: dark;
   }
+  /* dark controls on the page itself only: inside the party's iframe a dark scheme
+     would make the browser paint an opaque backdrop behind the transparent dance */
+  html:not(.embed) { color-scheme: dark; }
   html, body { height: 100%; }
   body {
     margin: 0;
@@ -65,6 +67,8 @@
   html.embed .wrap { max-width: none; }
   html.embed .bar { display: none; }
   html.embed .scenery { display: none; }
+  /* the party backdrop is dark, so bats get a soft enamel rim there */
+  html.embed .bat { stroke: rgba(251,246,236,.75); stroke-width: 3px; stroke-linejoin: round; paint-order: stroke; }
 </style>
 </head>
 <body>
@@ -142,7 +146,7 @@
     </g>`;
 
   const bat = id => `
-    <g id="${id}" fill="${INK}">
+    <g id="${id}" class="bat" fill="${INK}">
       <path class="wing" d="M0 0 C-8 -9 -20 -10 -30 -4 C-24 -2 -22 3 -18 6 C-13 2 -7 2 0 4 Z M0 0 C8 -9 20 -10 30 -4 C24 -2 22 3 18 6 C13 2 7 2 0 4 Z"/>
       <ellipse cx="0" cy="1" rx="5" ry="6"/>
       <path d="M-4 -4 L-3 -9 L-1 -5 Z M4 -4 L3 -9 L1 -5 Z"/>
@@ -161,7 +165,6 @@
       <g id="stars" fill="${ENAMEL}">
         <use href="#sparkle" id="st1"/><use href="#sparkle" id="st2"/><use href="#sparkle" id="st3"/><use href="#sparkle" id="st4"/>
       </g>
-      ${bat('bat1')}${bat('bat2')}${bat('bat3')}
       <path d="M-80 300 C10 236 120 246 200 268 C280 238 380 222 480 254 L480 340 L-80 340 Z" fill="#3A2459"/>
       <g fill="none" stroke="#2A1A42" stroke-width="9" stroke-linecap="round">
         <path d="M-30 300 C-28 270 -32 240 -26 206"/>
@@ -174,6 +177,7 @@
       <path d="M-80 ${GROUND} L480 ${GROUND} L480 520 L-80 520 Z" fill="#2B1D45" stroke="${INK}" stroke-width="6"/>
       <g transform="translate(16 ${GROUND + 8}) scale(.52)">${lantern('small', 'smallGlow')}</g>
     </g>
+    ${bat('bat1')}${bat('bat2')}${bat('bat3')}
     <circle id="halo" cx="392" cy="286" r="104" fill="#FFB22E" opacity=".14"/>
     <ellipse cx="392" cy="${GROUND + 4}" rx="96" ry="9" fill="#000" opacity=".22"/>
     <g id="bigWrap">${lantern('big', 'bigGlow')}</g>
