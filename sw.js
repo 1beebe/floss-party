@@ -1,11 +1,12 @@
 // Floss Party service worker: caches the app shell so it opens offline.
 // Bump CACHE when any shell file changes so installed copies update.
-const CACHE = "flossparty-v4";
+const CACHE = "flossparty-v5";
 const SHELL = [
   "./", "index.html", "manifest.webmanifest", "icon.svg",
   // tooth dances the party can pick, so they play offline too
   "animations/tooth-kit.js", "animations/lasso.html", "animations/hoop.html", "animations/limbo.html",
   "animations/jumprope.html", "animations/swing.html", "animations/whip.html", "animations/web.html",
+  "animations/lantern.html",
 ];
 
 self.addEventListener("install", (e) => {

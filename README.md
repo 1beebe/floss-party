@@ -15,7 +15,7 @@ Plain HTML, CSS and JavaScript with no build step and no dependencies.
 | `sw.js` | Service worker that caches the app so it opens offline |
 | `icon.svg` | App icon |
 | `demo.html` | Preview build seeded with two months of sample history, for showing off the look (nothing saves) |
-| `animations/` | The seven Floss Tooth animations (**Lasso**, **Hoop**, **Limbo**, **Jump Rope**, **Swing**, **Whip** and **Web**), an index page, and `tooth-kit.js`, the shared on-model tooth the newer four are built from |
+| `animations/` | The eight Floss Tooth animations (**Lasso**, **Hoop**, **Limbo**, **Jump Rope**, **Swing**, **Whip**, **Web** and the Halloween **Floss-o'-Lantern**), an index page, and `tooth-kit.js`, the shared on-model tooth the newer five are built from |
 | `design/model-sheet/` | The Floss Tooth model sheet: turnaround, character rules, expressions, limbo pose study and palette |
 | `privacy.html` | Privacy policy (nothing is collected), needed for the App Store listing |
 | `wrangler.jsonc`, `.assetsignore` | Cloudflare Worker settings that serve the site at floss.lbeebe.com. See [DEPLOY.md](DEPLOY.md) |
