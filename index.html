@@ -299,6 +299,9 @@
     background:conic-gradient(from 0deg,#fff,#7C4DFF,#33E1B0,#FF3D8B,#fff);animation:spin 1.4s linear infinite}
   .tapclose{position:absolute;bottom:calc(env(safe-area-inset-bottom) + 22px);left:0;right:0;
     text-align:center;color:rgba(255,255,255,.8);font-size:.78rem;font-weight:700;z-index:2}
+  /* the close hint shows up only once a tap can actually close the party (see GRACE_MS) */
+  #party.on .tapclose{animation:hintIn .4s ease 1.5s both}
+  @keyframes hintIn{from{opacity:0}to{opacity:1}}
 
   @keyframes spin{to{transform:rotate(360deg)}}
   @keyframes pop{0%{transform:scale(.4);opacity:0}60%{transform:scale(1.12)}100%{transform:scale(1);opacity:1}}
@@ -927,14 +930,24 @@
   /* ---- Tooth dances: random rewards ----
      Some parties are just the disco floor; others bring out one of the Floss Tooth
      animations (animations/*.html, shown with ?embed). The very first party always
-     gets a tooth, and the same tooth never plays twice in a row. */
+     gets a tooth, and the same tooth never plays twice in a row, unless the
+     party was closed before it finished: then the next party replays it. */
   var DANCES=[
     {id:"lasso",secs:9},{id:"hoop",secs:8},{id:"limbo",secs:9.2},{id:"jumprope",secs:8},
     {id:"swing",secs:8},{id:"whip",secs:9},{id:"web",secs:8},{id:"lantern",secs:21,song:"spooky",loops:2}
   ];
   var TOOTH_CHANCE=0.6, LS_DANCE="flossparty.lastdance.v1", lastDance=null;
+  var LS_REPLAY="flossparty.replay.v1", replayDance=null, currentDance=null;
+  try{ replayDance = localStorage.getItem(LS_REPLAY); }catch(e){}
   try{ lastDance = localStorage.getItem(LS_DANCE); }catch(e){}
+  function setReplay(id){
+    replayDance=id;
+    try{ if(id) localStorage.setItem(LS_REPLAY,id); else localStorage.removeItem(LS_REPLAY); }catch(e){}
+  }
   function pickDance(){
+    var again = replayDance && DANCES.filter(function(d){return d.id===replayDance;})[0];
+    setReplay(null);
+    if(again) return again;                        // finish the dance that got cut short
     var first = lastDance===null;
     var choice = null;
     if(first || Math.random()<TOOTH_CHANCE){
@@ -961,8 +974,8 @@
     document.getElementById("subboom").textContent=SUBS[(Math.random()*SUBS.length)|0];
     document.getElementById("trackName").textContent=trackName();
     var boom=p.querySelector(".boom");boom.style.animation="none";void boom.offsetWidth;boom.style.animation="";
-    p.classList.add("on");p.setAttribute("aria-hidden","false");partyOn=true;
-    var dance=pickDance(), spooky=!!(dance&&dance.song==="spooky");   // Floss-o'-Lantern brings its own song
+    p.classList.add("on");p.setAttribute("aria-hidden","false");partyOn=true;partyAt=Date.now();
+    var dance=currentDance=pickDance(), spooky=!!(dance&&dance.song==="spooky");   // Floss-o'-Lantern brings its own song
     if(spooky) document.getElementById("trackName").textContent="Pumpkin Patch Funk";
     var bpm=spooky?120:104+((Math.random()*20)|0);
     clearTimeout(danceT); document.getElementById("grid").classList.add("dancing"); // calendar floor comes alive
@@ -971,18 +984,26 @@
     var danceMs=showDance(dance);
     var dur=8200;
     if(!muted){ try{dur=spooky?playSpooky(danceFrame,dance.loops):playGroove(bpm);}catch(e){} }
-    clearTimeout(partyT); partyT=setTimeout(endParty, Math.max(dur+400,danceMs+400,4200));
+    clearTimeout(partyT); partyT=setTimeout(function(){endParty();}, Math.max(dur+400,danceMs+400,4200));
   }
-  function endParty(){
+  function endParty(early){
     if(!partyOn) return;
     partyOn=false;
+    if(early && currentDance) setReplay(currentDance.id);   // tapped out mid-dance: it comes back next time
     var p=document.getElementById("party");p.classList.remove("on");p.setAttribute("aria-hidden","true");
     stopFloor(); stopMusic(); hideDance();
     cancelAnimationFrame(confRAF);cctx.clearRect(0,0,confCv.width,confCv.height);
     // victory lap: let the real calendar keep shimmering a moment as the overlay fades
     clearTimeout(danceT); danceT=setTimeout(function(){document.getElementById("grid").classList.remove("dancing");},3600);
   }
-  document.getElementById("party").addEventListener("click",endParty);
+  /* Only a deliberate tap closes the party. Taps in its first moments, or in a quick
+     burst (a double tap, a kid mashing the button), are ignored so the fun can't end by accident. */
+  var GRACE_MS=1500, BURST_MS=600, partyAt=0, lastTapAt=0, tapGap=Infinity;
+  addEventListener("pointerdown",function(){var n=Date.now();tapGap=n-lastTapAt;lastTapAt=n;},true);
+  document.getElementById("party").addEventListener("click",function(){
+    if(Date.now()-partyAt<GRACE_MS || tapGap<BURST_MS) return;
+    endParty(true);
+  });
   addEventListener("resize",function(){if(partyOn){sizeCanvas();sizeFloor();}});
 
   /* ---------- wire up ---------- */
